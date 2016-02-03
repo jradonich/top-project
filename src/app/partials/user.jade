@@ -1,0 +1,31 @@
+//
+   Created by jamieradonich on 2/1/16.
+
+
+div.row.user(ng-controller="UserController")
+  div.col-md-3
+    img(ng-show="user.image" ng-src="user.image" alt="")
+    div.empty(ng-show="!user.image") Add Profile Image...
+  div.col-md-6
+    div.userheader
+      h3(class="user-name" editable-text="user.name" buttons="no") {{ user.name || "Add name" }}
+      div(editable-text="user.location" buttons="no") {{ user.location || "Add location" }}
+      div(editable-text="user.languages" buttons="no") {{ user.languages || "Add languages" }}
+    div(ng-click="addSkill()", ng-mouseover="") Add Skill
+  div.col-md-3.actions
+    //div.view(ng-show={{isView}})
+    div.edit
+      div.data-actions.row
+        div.col-md-6
+          button.btn.btn-block.btn-primary(ng-click="updateProfile()", ng-disabled="hasChanged()") Save Profile
+        div.col-md-6
+          button.btn.btn-block.btn-default(ng-disabled="!isProfileComplete()") Publish Profile
+        div.text-muted (You can only publish a completed profile)
+      div.row
+        div.col-md-12
+          button.btn.btn-primary
+            span.glyphicon.glyphicon-open
+            span  Upload Resume
+
+p User Controller User:
+pre {{user | json}}

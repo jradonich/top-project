@@ -1,0 +1,19 @@
+//
+   Created by jamieradonich on 2/1/16.
+div
+  div(ng-include="'app/partials/user.html'")
+
+
+
+  div.content-container(ng-controller="ContentController")
+    div.row
+      div.col-md-3(ng-repeat="section in sections")
+        div.content-panel(content-item content="section"))
+
+
+    h2.row.text-center Let me introduce myself ...
+
+    div.row
+      div.col-md-3(ng-repeat="mysection in mySections")
+        content-item(content="mysection")
+    pre {{sections | json}}
