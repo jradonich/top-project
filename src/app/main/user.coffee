@@ -1,6 +1,6 @@
 userModule = angular.module 'user', ["localService"]
 
-userModule.controller 'UserController', ['$scope', 'User', ($scope, user) ->
+userModule.controller 'UserController', ['$scope', '$timeout', 'User', ($scope, $timeout, user) ->
   user.init()
   $scope.user = user.model
 
@@ -12,12 +12,16 @@ userModule.controller 'UserController', ['$scope', 'User', ($scope, user) ->
 
   $scope.currentSkill = {}
 
+  focusOnInput = ->
+    $('.addASkillContainer input').focus()
+
   $scope.addSkill = ->
     $scope.isAddingSkill = true
     $scope.currentSkill =
       skillLevel: "Expert"
     $scope.skillCurrentlyBeingAdded =
       skillLevel: "Expert"
+    $timeout(focusOnInput, 0)
 
 
   $scope.addCurrentSkill = (skill) ->
