@@ -3,7 +3,30 @@ userModule = angular.module 'user', ["localService"]
 userModule.controller 'UserController', ['$scope', 'User', ($scope, user) ->
   user.init()
   $scope.user = user.model
-  console.log("UserController $scope", $scope.user)
+
+  $scope.$watch('user.location', (newValue, oldValue) ->
+    if newValue isnt oldValue
+      console.log("user location changed.  Broadcasting", newValue)
+      $scope.$broadcast('location-set', newValue)
+  , true)
+
+  $scope.currentSkill = {}
+
+  $scope.addSkill = ->
+    $scope.isAddingSkill = true
+    $scope.currentSkill =
+      skillLevel: "Expert"
+    $scope.skillCurrentlyBeingAdded =
+      skillLevel: "Expert"
+
+
+  $scope.addCurrentSkill = (skill) ->
+    if not $scope.user.skills
+      $scope.user.skills = []
+    skill.skillClass = "skill-#{skill.skillLevel.toLowerCase()}"
+    $scope.user.skills.push(skill)
+
+    $scope.isAddingSkill = false
 ]
 
 userModule.constant('saveNS', 'toptalUser')

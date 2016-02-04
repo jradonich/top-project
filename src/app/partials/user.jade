@@ -4,14 +4,34 @@
 
 div.row.user(ng-controller="UserController")
   div.col-md-3
-    img(ng-show="user.image" ng-src="user.image" alt="")
+    img(ng-show="user.image" ng-src="{{user.image}}" alt="")
     div.empty(ng-show="!user.image") Add Profile Image...
   div.col-md-6
     div.userheader
       h3(class="user-name" editable-text="user.name" buttons="no") {{ user.name || "Add name" }}
-      div(editable-text="user.location" buttons="no") {{ user.location || "Add location" }}
+      div(location="user.location")
       div(editable-text="user.languages" buttons="no") {{ user.languages || "Add languages" }}
-    div(ng-click="addSkill()", ng-mouseover="") Add Skill
+    div.skills
+      ul.list-inline.skills-list
+        li(ng-repeat="skill in user.skills" ng-class="skill.skillClass" ) {{skill.skillName}}
+      button.btn-default.btn.addSkill(type="button" ng-click="addSkill()" ng-show="!isAddingSkill") Add Skill &nbsp;
+        span.hover-icon.glyphicon.glyphicon-plus-sign(aria-hidden="true")
+      div.addASkillContainer(ng-show="isAddingSkill")
+        form.form-inline
+          div.row
+            div.col-md-7
+              input.input-sm.form-control(type="text" name="skillName" placeholder="Add Skill" ng-model="skillCurrentlyBeingAdded.skillName")
+            div.col-md-4
+              div.control-group
+                select.input-sm.form-control(ng-model="skillCurrentlyBeingAdded.skillLevel" name="skillLevel")
+                  option(checked value="Expert") Expert
+                  option(value="Advanced") Advanced
+                  option(value="Intermediate") Intermediate
+                  option(value="Beginner") Beginner
+            div.col-md-1
+              button.btn.btn-link.btn-approve(ng-click="addCurrentSkill(skillCurrentlyBeingAdded)")
+                span.glyphicon.glyphicon-ok-sign
+
   div.col-md-3.actions
     //div.view(ng-show={{isView}})
     div.edit

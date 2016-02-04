@@ -1,3 +1,22 @@
+//.vertical-align {
+//  display: flex;
+//  align-items: center;
+//}
+
+
+//Skill color variables
+@skill-expert: #d9534f;
+@skill-advanced: #f0ad4e;
+@skill-intermediate: #5bc0de;
+@skill-beginner: #5cb85c;
+
+.skill(@name) {
+  @color: "skill-@{name}";
+  .skill-@{name} {
+    background-color: @@color;
+    color: white
+  }
+}
 
 .empty {
   position: relative;
@@ -7,7 +26,66 @@
   .center-block();
 }
 
+.editable-wrap {
+  width: 100%;
+  .editable-controls {
+    width: 100%;
+    .editable-input {
+      width: 100%;
+    }
+  }
+}
+.btn-approve {
+  color: @brand-success;
+}
 .user {
+  .skills {
+    width: 100%;
+    .addASkillContainer {
+      :not(.control-group) {
+        .form-control {
+          width: 100%;
+        }
+      }
+      .control-group {
+        width: 100%;
+        .form-control {
+          select {
+            width: 90%;
+          }
+        }
+      }
+      .row {
+        div {
+          padding-right: 0;
+          &:not(:first-child) {
+            padding-left: 0;
+          }
+        }
+      }
+    }
+    .skills-list {
+      .skill(~"expert");
+      .skill(~"advanced");
+      .skill(~"intermediate");
+      .skill(~"beginner");
+      li {
+        margin: 3px;
+        padding: 3px 5px;
+      }
+
+    }
+    .addSkill {
+      .hover-icon {
+        display: none;
+      }
+      &:hover:not(.editing) {
+        .hover-icon {
+          display: inline-block;
+        }
+      }
+    }
+  }
   &.row > div{
     height: 100%;
   }
@@ -33,21 +111,61 @@
   .row > div {
     height: 100%;
   }
+  content-item {
+    min-height: 100%;
+    position: relative;
+  }
   .content-panel {
     height: 100%;
     //width: 100%;
     border: 1px solid darkgray;
-    min-height: 140px;
-    //padding-right: 2px;
-    //padding-left: 2px;
+    min-height: 200px;
     .panel-head {
       width: 100%;
+      padding-top: 5px;
+      padding-bottom: 2px;
+      font-weight: bold;
       font-size: @font-size-h4;
       min-height: 30px;
       .center-block();
     }
-    .panel-body {
-      height: 80%
+    .editing {
+      .panel-head {
+
+      }
+    }
+    .body {
+      height: 80%;
+      width: 100%;
+      //position: relative;
+      //top: 50%;
+      //transform: translateY(-50%);
+      .editable-wrap {
+        width: 100%;
+
+        //override inputs to make stretch entire width and buttons below instead of next to input
+        .editable-controls {
+          display: block;
+          padding-right: 5px;
+          margin-left: 3px;
+          margin-right: 3px;
+          input, textarea {
+            width: 100%;
+            display: block;
+          }
+          textarea {
+            height: 100%;
+          }
+          .editable-buttons {
+            padding-top: 3px;
+            .pull-left();
+            button[type="button"] {
+              display: none;
+            }
+          }
+        }
+      }
+
     }
   }
 }

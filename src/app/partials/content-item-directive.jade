@@ -1,6 +1,11 @@
 //
    Created by jamieradonich on 2/2/16.
-div.content-item
-  div.panel-head.text-center {{model.name}}
-  div.body(ng-click="bodyClick()")
-    |{{model.content || "Add Content..."}}
+div.content-item(ng-class="{editing: isEditing}")
+  div.panel-head.text-center(ng-show="!model.url") {{model.name}}
+  div.body.vertical-align.text-center(ng-switch="model.inputType")
+    div(ng-switch-when="text" buttons="no" editable-text="model.data" e-placeholder="{{model.defaultContent}}"
+      onshow="onContentElementShow()" onhide="bodyClick(true)")
+      |{{ model.data || "Add Content..."}}
+    div(ng-switch-default editable-textarea="model.data" e-placeholder="{{model.defaultContent}}" onshow="onContentElementShow()" onhide="bodyClick(true)")
+      | {{ model.data || "Add Content..."}}
+  img(ng-show="model.url" ng-src="{{model.url}}")

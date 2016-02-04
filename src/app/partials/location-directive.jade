@@ -1,0 +1,4 @@
+//
+   Created by jamieradonich on 2/4/16.
+div(editable-text="location" buttons="no" onaftersave="updateLocation()" onbeforesave="checkLocation($data)") {{ location || "Add location" }}
+  span.validation(ng-show="isValidating") validating...
