@@ -1,0 +1,10 @@
+div
+  h4(editable-radiolist="model.data.status" buttons="no" e-ng-options="opt for opt in options")
+    |{{getRadioValue(model.data.status) || 'Add availability...'}}
+  div()
+
+div()
+  hr
+  div.row.panel-head.text-center Preferred environment
+  div(editable-text="model.data.environments" e-placeholder="Add environments (comma separated)")
+    |{{model.data.environments || 'Add content...'}}
