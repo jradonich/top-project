@@ -1,38 +1,44 @@
-h4.skills.text-center Top skills on toptal
+div.skills(ng-controller="FooterController")
+  h4.text-center Top skills on toptal
+  ul.list-unstyled.skills-list
+    li(ng-repeat="skillGroup in topSkillsList")
+      div.row(ng-repeat="skill in skillGroup")
+        div.col-md-1.col-sm-3.col-xs-3
+          span(ng-show="$first").alpha-group {{skill[0] | uppercase}}
+        div.col-md-10.col-sm-8.col-xs-8
+          a(href="http://toptal.com") {{skill}}
 
-div.connected-wells
-  div.join.well
-    div.row
-      div.col-md-12
-        h4.text-center
-          span.subtle Join the toptal community.&nbsp;
-          span Apply to work with us as a&nbsp;
-          span
-            button.btn.btn-default.text-uppercase Developer
-            span &nbsp;Or&nbsp;
-            button.btn.btn-default.text-uppercase Client
+  div.connected-wells
+    div.join.well
+      div.row
+        div.col-md-12
+          h4.text-center
+            span.subtle Join the toptal community.&nbsp;
+            span Apply to work with us as a&nbsp;
+            span
+              button.btn.btn-default.text-uppercase Developer
+              span &nbsp;Or&nbsp;
+              button.btn.btn-default.text-uppercase Client
 
-
-
-  div.about-toptal.well
-    div.row
-      div.col-md-5.group.col-sm-12
-        div.topic About toptal
-        div TopTal connects start-ups, businesses, and organizations to a growing network of the best developers in the
-          |world.Our engineers are available full- or part-time and are able to seamlessly integrate into your team.
-      div.col-md-3.group.col-sm-5
-        div.topic FAQ
-        ul.list-unstyled
-          each val in ['How can I join toptal?', 'What requirements I have to meet', 'How do you pay me?']
-            li.text-capitalize
-              a(href='http://toptal.com/' + val.split(' ')[0] + '.html')=val
-      div.col-md-1.group.col-sm-2
-        ul.list-unstyled.all-bold
-          each val in ['what', 'why', 'how', 'clients', 'team', 'lab']
-            li.text-capitalize
-              a(href='http://toptal.com/' + val + '.html')=val
-      div.col-md-2.group.col-sm-4
-        div.topic Contact
-        ul.list-unstyled
-          each val in ['Join Us', 'Send us an e-mail', 'Follow us on twitter', 'Call 888.323.4422']
-            li.text-capitalize=val
+    div.about-toptal.well
+      div.row
+        div.col-md-5.group.col-sm-12
+          div.topic About toptal
+          div TopTal connects start-ups, businesses, and organizations to a growing network of the best developers in the
+            |world.Our engineers are available full- or part-time and are able to seamlessly integrate into your team.
+        div.col-md-3.group.col-sm-5
+          div.topic FAQ
+          ul.list-unstyled
+            each val in ['How can I join toptal?', 'What requirements I have to meet', 'How do you pay me?']
+              li.text-capitalize
+                a(href='http://toptal.com/' + val.split(' ')[0] + '.html')=val
+        div.col-md-1.group.col-sm-2
+          ul.list-unstyled.all-bold
+            each val in ['what', 'why', 'how', 'clients', 'team', 'lab']
+              li.text-capitalize
+                a(href='http://toptal.com/' + val + '.html')=val
+        div.col-md-2.group.col-sm-4
+          div.topic Contact
+          ul.list-unstyled
+            each val in ['Join Us', 'Send us an e-mail', 'Follow us on twitter', 'Call 888.323.4422']
+              li.text-capitalize=val

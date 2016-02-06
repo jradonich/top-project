@@ -1,6 +1,45 @@
+@import "mixins.less";
+//@import "
+
 .skills{
-  font-weight:bold;
+  h4 {
+    font-weight:bold;
+  }
+  ul.skills-list {
+    @media (min-width: @screen-md-min) {
+      & {
+        .content-columns(4, 10px);
+      }
+    }
+    @media (max-width: @screen-sm-max) {
+      & {
+        .content-columns(3, 10px);
+      }
+    }
+    @media (max-width: @screen-xs-max) {
+      & {
+        .content-columns(2, 10px);
+      }
+    }
+    padding-top: 10px;
+    .column-count(4);
+    .column-gap(10px);
+    li {
+      .alpha-group {
+        font-weight: bold;
+      }
+      a {
+        color: black;
+      }
+    }
+  }
 }
+
+//@media (min-width: @screen-md-min) {
+//  ul.skills-list {
+//    .content-columns(3, 10px);
+//  }
+//}
 
 .connected-wells {
   margin-top:0;
