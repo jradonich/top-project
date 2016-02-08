@@ -1,12 +1,18 @@
 describe 'Content', () ->
 
   conTypes = undefined
+  google = undefined
+  mapServ = undefined
 
   beforeEach module 'toptalProject'
   beforeEach module 'content'
+  beforeEach module 'map'
 
-  beforeEach inject (contentTypes, map) ->
+
+  beforeEach inject (contentTypes, mapService) ->
     conTypes = contentTypes
+    google = {}
+    mapServ = mapService
 
 
   it('should return a content type object based on no provided type (default case)', ()->
@@ -22,8 +28,8 @@ describe 'Content', () ->
     expect(typeInstance.type).toEqual('file')
   )
 
-  it('should validate a map type by making call to google map service', () ->
-    typeInstance = new conTypes('map')
-    typeInstance.validate('Tacoma, WA').then()
-
-  )
+#  it('should validate a map type by making call to google map service', () ->
+#    typeInstance = new conTypes('map')
+#    typeInstance.validate('Tacoma, WA').then()
+#
+#  )

@@ -1,5 +1,5 @@
 angular.module 'toptalProject'
-  .controller 'MainController', ($scope, $timeout, webDevTec, toastr, User) ->
+  .controller 'MainController', ($scope, $timeout, webDevTec, toastr, User, defaultUser) ->
     'ngInject'
     vm = this
 
@@ -25,10 +25,10 @@ angular.module 'toptalProject'
 
 
     User.init()
-    originalUser = angular.copy(User.model)
+
+    originalUser = angular.extend({}, defaultUser, User.model)
+    originalUser = angular.copy(originalUser)
     $scope.user = User.model
-
-
 
 
     # handler for Save Profile button

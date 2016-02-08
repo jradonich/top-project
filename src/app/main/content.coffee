@@ -3,10 +3,12 @@ contentModule = angular.module 'content', ['map']
 contentModule.controller('ContentController', ['$scope', ($scope) ->
   'ngInject'
 
-  $scope.sections =
+  sections =
     portfolio:
       name: "Portfolio"
       type: 'list'
+      listLeftPlaceholder: "Project Name"
+      listRightPlaceholder: "Skills Used"
     experience:
       name: "Experience"
       type: 'list'
@@ -27,9 +29,43 @@ contentModule.controller('ContentController', ['$scope', ($scope) ->
       updateOnEvent: 'location-set'
     note:
       name: "Note"
+      notFromUser: true
 
 
-  $scope.mySections = []
+  tmpSections = {}
+  _.forEach(sections, (section, prop, obj) ->
+    tmpSections[prop] = {
+      layout: angular.extend({}, section)
+    }
+  )
+
+  console.log("$scope.user in ContentController", $scope.user)
+  if $scope.user.content?
+    _.forEach(tmpSections, (section, key) ->
+      if not section.data
+        section.data = {}
+
+
+      cur = $scope.user.content[key]
+      console.log "section - #{key}"
+      if cur
+        console.log("found value for #{key}", cur)
+        section.data = cur
+      else
+        section.data = $scope.user.content[key] = {data:""}
+
+    )
+    console.log("sections after loop", tmpSections)
+    console.log("$scope.user after for loop", $scope.user.content)
+    $scope.sections = tmpSections
+
+  $scope.$on('user.content.portfolio', (newVal, oldVal) ->
+    console.log('user.content.portfolio changed', arguments)
+  , true)
+
+  $scope.mySections = [
+
+  ]
 
 ])
 
@@ -74,23 +110,24 @@ contentModule.factory('contentTypes', ["mapService", "$q", (mapService, $q) ->
   class MapContentType extends ContentType
     constructor: (@type, @content) ->
       super("map", @content)
-      @inputType = "text"
+      @inputType = "map"
 
     validate: (location) ->
       con = @content
       console.log("Validate() #{con}")
-#      isValid = true
+      #noinspection JSUnresolvedVariable
       mapService.validate(location)
 
     render: (element) ->
+      #noinspection JSUnresolvedVariable
       mapService.display(element)
     loadContent: () ->
 
   class ListContentType extends ContentType
     @columns = 2
-    @tpl = "app/partials/list"
     constructor: () ->
-
+      super("list")
+      @inputType = "list"
 
 
   class FileContentType extends ContentType
@@ -99,7 +136,7 @@ contentModule.factory('contentTypes', ["mapService", "$q", (mapService, $q) ->
 
   class AvailabilityType extends ContentType
     constructor: () ->
-      @options = ["Full Time", "Part Time"]
+      @options = ["Full-Time", "Part-Time"]
       @inputType = "availability"
 
   class ContentTypeBuilder
@@ -110,6 +147,8 @@ contentModule.factory('contentTypes', ["mapService", "$q", (mapService, $q) ->
         return new FileContentType()
       else if type is "availability"
         return new AvailabilityType()
+      else if type is "list"
+        return new ListContentType()
       else
         return new ContentType()
 
@@ -117,32 +156,37 @@ contentModule.factory('contentTypes', ["mapService", "$q", (mapService, $q) ->
   return ContentTypeBuilder
 ])
 
-contentModule.directive 'contentItem', ['contentTypes', '$rootScope', '$filter',
-  (contentTypes, $rootScope, $filter)->
+contentModule.directive 'contentItem', ['contentTypes', '$rootScope', 'User',
+  (contentTypes, $rootScope, User)->
     'ngInject'
     return {
       restrict: 'EA'
       scope:
-        model: '=content'
+        layout: '=content'
+        model: '=contentMod'
       templateUrl: "app/partials/content-item-directive.html"
       link: (scope, element, attrs) ->
-        if scope.model.type
-          console.log("Scope.content - #{scope.model.type}", scope.model)
+        layoutObj = scope.layout
+        if layoutObj.type
+          console.log("Scope.content - #{layoutObj.type}", layoutObj)
         else
-          console.log("Scope.content - default", scope.model)
+          console.log("Scope.content - default", layoutObj)
 
-
-        typeObject = new contentTypes(scope.model.type)
+        typeObject = new contentTypes(layoutObj.type)
         scope.template = "app/partials/content-item-types/#{typeObject.inputType || 'default'}.html"
         console.log("\ttypeObject", typeObject)
-        scope.model.inputType = typeObject.inputType || ""
+        scope.layout.inputType = typeObject.inputType || ""
         scope.isEditing = false
+
+        scope.user = User
 
         if typeObject.options?
           scope.options = typeObject.options
           scope.getRadioValue = (item) ->
             return item
 
+        scope.containerClick = () ->
+          scope.isEditing = true
 
         scope.onContentElementShow = () ->
           scope.isEditing = true
@@ -161,9 +205,8 @@ contentModule.directive 'contentItem', ['contentTypes', '$rootScope', '$filter',
                   scope.model.url = typeObject.render()
               )
 
-        if scope.model.updateOnEvent
-          console.log("scope.user", scope.user)
-          $rootScope.$on(scope.model.updateOnEvent, (newVal) ->
+        if scope.layout.updateOnEvent
+          $rootScope.$on(scope.layout.updateOnEvent, (newVal) ->
             scope.model.url = typeObject.render()
           )
     }

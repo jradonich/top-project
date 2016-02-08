@@ -1,13 +1,29 @@
-.statement {
-  display: inline-block;
+@inverse-color: #000;
+@inverse-text-color: #fff - @inverse-color;
 
-  img {
-    max-height: 2.5em;
-    margin-right: 5px;
+.header {
+  &.inverse {
+    background-color: @inverse-color;
+    color: @inverse-text-color;
+    a {
+      color: @inverse-text-color;
+    }
   }
-  .statement-text {
+  .statement {
+    display: inline-block;
     font-size: @font-size-h4;
-    font-weight: bold;
 
+    img {
+      max-height: 2.5em;
+      margin-right: 5px;
+    }
+    .statement-text {
+      font-size: @font-size-h4;
+      font-weight: bold;
+      color: #777;
+
+    }
   }
+
+
 }

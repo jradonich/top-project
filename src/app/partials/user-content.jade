@@ -1,16 +1,31 @@
 //
    Created by jamieradonich on 2/1/16.
-div
-  div(ng-include="'app/partials/user.html'")
+div.container
+  div.row(ng-controller="UserController")
+    div(ng-include="'app/partials/user.html'")
 
-  div.content-container(ng-controller="ContentController")
-    div.row
-      div.col-md-3(ng-repeat="section in sections")
-        div.content-panel(content-item content="section")
+  div.row
+    div.content-container(ng-controller="ContentController")
+      div.row
+        div.col-md-3.content-container-item(ng-repeat="section in sections")
+          div.content-panel(content-item content-mod="section.data" content="section.layout")
 
-    h2.row.text-center Let me introduce myself ...
+      h2.row.text-center Let me introduce myself ...
 
-    div.row
-      div.col-md-3(ng-repeat="mysection in mySections")
-        content-item(content="mysection")
-    pre {{sections | json}}
+      div.row
+        div.col-md-3(ng-repeat="mysection in mySections")
+          content-item(content="mysection")
+      //pre {{sections | json}}
+
+  div.row
+    div.top-skills(ng-controller="FooterController")
+      h4.text-center Top skills on toptal
+      ul.list-unstyled.skills-list
+        li(ng-repeat="skillGroup in topSkillsList")
+          div.row(ng-repeat="skill in skillGroup")
+            div.col-md-1.col-sm-3.col-xs-3
+              span(ng-show="$first").alpha-group {{skill[0] | uppercase}}
+            div.col-md-10.col-sm-8.col-xs-8
+              a(href="http://toptal.com") {{skill}}
+
+

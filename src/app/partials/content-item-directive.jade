@@ -1,7 +1,16 @@
 //
    Created by jamieradonich on 2/2/16.
-div.content-item(ng-class="{editing: isEditing}")
-  div.panel-head.text-center(ng-show="!model.url") {{model.name}}
-  div.body.vertical-align.text-center
-    div(ng-include="template")
-  img(ng-show="model.url" ng-src="{{model.url}}")
+div.row.content-item(ng-class="{editing: isEditing}" style="height: 190px")
+  div.col-md-12.text-center.panel-head(ng-show="!model.url") {{layout.name}}
+  div.col-md-12.text-center.vertical-align.body
+    div.tpl-include(ng-include="template")
+  //div.col-md-12.panel-head.text-center(ng-show="!model.url") {{layout.name}}
+  //div.body.text-center
+  //  div(ng-include="template")
+  //img(ng-show="model.url" ng-src="{{model.url}}")
+
+//div.content-item(ng-class="{editing: isEditing}")
+//  div.col-md-12.panel-head.text-center(ng-show="!model.url") {{layout.name}}
+//  div.body.text-center
+//    div(ng-include="template")
+//  img(ng-show="model.url" ng-src="{{model.url}}")

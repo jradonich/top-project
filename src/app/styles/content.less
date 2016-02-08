@@ -1,7 +1,8 @@
-//.vertical-align {
-//  display: flex;
-//  align-items: center;
-//}
+.vertical-align {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 
 
 //Skill color variables
@@ -18,6 +19,11 @@
   }
 }
 
+//Content item "Panel" variables
+@panel-height: 200px;
+@panel-header-height: 35px;
+
+
 //remove default styling from angular-xeditable
 .editable-click, .editable-click:hover,
 a.editable-click, .editable-empty, .editable-empty:hover{
@@ -26,8 +32,45 @@ a.editable-click, .editable-empty, .editable-empty:hover{
   font-style: inherit;
 }
 
-.editable-empty:hover, .editable-click:hover {
-  border: solid 1px lightgray;
+.editable-empty, .editable-click {
+  border: solid 1px transparent;
+  &:hover {
+    border: solid 1px lightgray;
+  }
+}
+
+.top-skills{
+  h4 {
+    font-weight:bold;
+  }
+  ul.skills-list {
+    @media (min-width: @screen-md-min) {
+      & {
+        .content-columns(4, 10px);
+      }
+    }
+    @media (max-width: @screen-sm-max) {
+      & {
+        .content-columns(3, 10px);
+      }
+    }
+    @media (max-width: @screen-xs-max) {
+      & {
+        .content-columns(2, 15px);
+      }
+    }
+    padding-top: 10px;
+    .column-count(4);
+    .column-gap(10px);
+    li {
+      .alpha-group {
+        font-weight: bold;
+      }
+      a {
+        color: black;
+      }
+    }
+  }
 }
 
 .empty {
@@ -50,150 +93,158 @@ a.editable-click, .editable-empty, .editable-empty:hover{
 .btn-approve {
   color: @brand-success;
 }
-
-.user {
-  &.row > div{
-    height: 100%;
-  }
-  .skills {
-    width: 100%;
-    .addASkillContainer {
-      :not(.control-group) {
-        .form-control {
-          width: 100%;
-        }
-      }
-      .control-group {
-        width: 100%;
-        .form-control {
-          select {
-            width: 90%;
-          }
-        }
-      }
-      .row {
-        div {
-          padding-right: 0;
-          &:not(:first-child) {
-            padding-left: 0;
-          }
-        }
-      }
+.main-content-container {
+  width: 95%;
+  .user {
+    background-color: darken(@gray-lighter, 10%);
+    &.row > div{
+      min-height: 200px;
     }
-    .skills-list {
-      .skill(~"expert");
-      .skill(~"advanced");
-      .skill(~"intermediate");
-      .skill(~"beginner");
-      li {
-        margin: 3px;
-        padding: 3px 8px;
-      }
-
-    }
-    .addSkill {
-      .hover-icon {
-        display: none;
-      }
-      &:hover:not(.editing) {
-        .hover-icon {
-          display: inline-block;
-        }
-      }
-    }
-  }
-
-  .userheader {
-    padding-bottom: 10px;
-    h3 {
-      margin-bottom: 5px;
-    }
-  }
-  padding: 5px 0;
-  background-color: darken(@gray-lighter, 10%);
-  height: 200px;
-  .actions {
-    .row:last-child {
-      div {
-        margin-top: 60%;
-        margin-left: 20%;
-      }
-    }
-  }
-}
-
-
-.display-component {
-  //width: 100%;
-  max-height: 100%;
-  //overflow: hidden;
-  img {
-    //width: auto;
-    max-width: 100%;
-    height: auto;
-    //max-height: 100%;
-  }
-}
-
-.content-container {
-  .row > div {
-    height: 100%;
-  }
-  content-item {
-    min-height: 100%;
-    position: relative;
-  }
-  .content-panel {
-    height: 100%;
-    //width: 100%;
-    border: 1px solid darkgray;
-    min-height: 200px;
-    .panel-head {
+    .skills {
+      .paddinglr(15px);
       width: 100%;
-      padding-top: 5px;
-      padding-bottom: 2px;
-      font-weight: bold;
-      font-size: @font-size-h4;
-      min-height: 30px;
-      .center-block();
-    }
-    .editing {
-      .panel-head {
-
-      }
-    }
-    .body {
-      height: 80%;
-      width: 100%;
-      //position: relative;
-      //top: 50%;
-      //transform: translateY(-50%);
-      .editable-wrap {
-        width: 100%;
-
-        //override inputs to make stretch entire width and buttons below instead of next to input
-        .editable-controls {
-          display: block;
-          padding-right: 5px;
-          margin-left: 3px;
-          margin-right: 3px;
-          input, textarea {
+      .skill-addition-row {
+        .addASkillContainer {
+          :not(.control-group) {
+            .form-control {
+              width: 100%;
+            }
+          }
+          .control-group {
             width: 100%;
-            display: block;
+            .form-control {
+              select {
+                width: 90%;
+              }
+            }
           }
-          textarea {
-            height: 100%;
-          }
-          .editable-buttons {
-            padding-top: 3px;
-            .pull-left();
-            button[type="button"] {
-              display: none;
+        }
+        .row {
+          div {
+            padding-right: 0;
+            &:not(:first-child) {
+              padding-left: 0;
             }
           }
         }
       }
+      .skills-list {
+        .skill(~"expert");
+        .skill(~"advanced");
+        .skill(~"intermediate");
+        .skill(~"beginner");
+        li {
+          margin: 3px;
+          padding: 3px 8px;
+        }
+
+      }
+      .addSkill {
+        .hover-icon {
+          display: none;
+        }
+        &:hover:not(.editing) {
+          .hover-icon {
+            display: inline-block;
+          }
+        }
+      }
+    }
+
+    .userheader {
+      padding-bottom: 10px;
+      h3 {
+        margin-bottom: 5px;
+      }
+    }
+    padding: 5px 0;
+    min-height: 200px;
+    .actions {
+      > div {
+        height: 100%;
+        position:relative;
+        .pin-bottom {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+        }
+      }
 
     }
   }
+
+
+  .display-component {
+    max-height: 100%;
+    position: relative;
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+    .edit-content {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+  }
+
+  .content-container {
+    //.row > div {
+    //  height: 100%;
+    //}
+    .content-container-item {
+      .paddinglr(0);
+    }
+    content-item {
+      min-height: 100%;
+      position: relative;
+    }
+    .content-panel {
+      height: 100%;
+      border: 1px solid darkgray;
+      min-height: 200px;
+      .panel-head {
+        width: 100%;
+        height: 35px;
+        .paddingtb(5px, 2px);
+        font-weight: bold;
+        font-size: @font-size-h4;
+        //min-height: 30px;
+        .center-block();
+      }
+      .editing {
+        .panel-head {
+
+        }
+      }
+      .body {
+        height: @panel-height - @panel-header-height;
+        width: 100%;
+        .editable-wrap {
+          width: 100%;
+
+          //override inputs to make stretch entire width and buttons below instead of next to input
+          .editable-controls {
+            display: block;
+            padding-right: 5px;
+            margin-left: 3px;
+            margin-right: 3px;
+            input, textarea {
+              width: 100%;
+              display: block;
+            }
+            .editable-buttons {
+              padding-top: 3px;
+              .pull-left();
+              button[type="button"] {
+                display: none;
+              }
+            }
+          }
+        }
+
+      }
+    }
+  }
+
 }

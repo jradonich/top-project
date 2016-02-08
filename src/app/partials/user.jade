@@ -1,26 +1,35 @@
 //
    Created by jamieradonich on 2/1/16.
-div.container
-  div.row.user(ng-controller="UserController")
-    div.col-md-3
-      div.display-component(ng-show="user.image")
-        img.img-fluid(ng-show="user.image" ng-src="{{user.image}}" alt="")
-      div(ng-show="!user.image")
-        button(ngf-select="loadImageFile($files, $invalidFiles)" single accept="image/*"
+div.row.user
+  div.col-md-3.col-sm-4.vertical-align
+    div.display-component(ng-show="user.image" ng-click="editImage()")
+      img.img-fluid(ng-show="user.image" ng-src="{{user.image}}" alt="")
+    div(ng-show="!user.image")
+      button.btn.btn-default.load-user-image(ngf-select="loadImageFile($files, $invalidFiles)" single accept="image/*"
         ngf-max-height="1000" ngf-max-size="1MB") Add Profile Image...
 
-    div.col-md-6
-      div.userheader
+  div.col-md-6.col-sm-8
+    div.row
+      div.col-md-12
         h3(class="user-name" editable-text="user.name" buttons="no") {{ user.name || "Add name" }}
-        div(location="user.location")
-        div(editable-text="user.languages" buttons="no") {{ user.languages || "Add languages" }}
-      div.skills
-        ul.list-inline.skills-list
-          li(ng-repeat="skill in user.skills" ng-class="skill.skillClass" ) {{skill.skillName}}
+    div.row
+      div.col-md-12
+        div(location="user.location" e-placeholder="Add Location")
+    div.row
+      div.col-md-12
+        div(editable-text="user.languages" buttons="no" e-placeholder="Add Languages...") {{ user.languages || "Add languages" }}
+
+    div.skills.row
+      ul.list-inline.skills-list
+        li(ng-repeat="skill in user.skills" ng-class="skill.skillClass" ng-click="editSkill(skill)")
+          span {{skill.skillName}} &nbsp;
+          button.close(type="button" aria-label="Close" ng-click="removeSkill($index)")
+            span(aria-hidden="true") &times;
+      div.skill-addition-row
         button.btn-default.btn.addSkill(type="button" ng-click="addSkill()" ng-show="!isAddingSkill") Add Skill &nbsp;
           span.hover-icon.glyphicon.glyphicon-plus-sign(aria-hidden="true")
         div.addASkillContainer(ng-show="isAddingSkill")
-          form.form-inline
+          form.skill-form.form-inline
             div.row
               div.col-md-7
                 input.input-sm.form-control(type="text" name="skillName" placeholder="Add Skill" ng-model="skillCurrentlyBeingAdded.skillName")
@@ -35,23 +44,24 @@ div.container
                 button.btn.btn-link.btn-approve(ng-click="addCurrentSkill(skillCurrentlyBeingAdded)")
                   span.glyphicon.glyphicon-ok-sign
 
-    div.col-md-3.actions
-      //div.view(ng-show={{isView}})
-      div.edit
-        div.data-actions.row
-          div.col-md-6
-            button.btn.btn-block.btn-primary(ng-click="updateProfile()", ng-disabled="hasChanged()") Save Profile
-          div.col-md-6
-            button.btn.btn-block.btn-default(ng-disabled="!isProfileComplete()") Publish Profile
-          div.text-muted (You can only publish a completed profile)
-        div.row
-          div.col-md-12
-            button.btn.btn-primary
-              span.glyphicon.glyphicon-open
-              span  Upload Resume
+  div.col-md-3.actions
+    //div.view(ng-show={{isView}})
+    div.edit
+      div.data-actions.row
+        div.col-md-6
+          button.btn.btn-block.btn-primary(ng-click="updateProfile()", ng-disabled="hasChanged()") Save Profile
+        div.col-md-6
+          button.btn.btn-block.btn-default(ng-disabled="!isProfileComplete()") Publish Profile
+      div.row
+        div.text-muted (You can only publish a completed profile)
+      //div.row.pin-bottom
+      //  div.col-md-12
+      //    button.btn.btn-primary
+      //      span.glyphicon.glyphicon-open
+      //      span  Upload Resume
 
 
 
 
-p User Controller User:
-pre {{user | json}}
+//p User Controller User:
+//pre {{user | json}}

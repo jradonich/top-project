@@ -1,4 +1,12 @@
 //
    Created by jamieradonich on 2/4/16.
-div(editable-text="location" buttons="no" onaftersave="updateLocation()" onbeforesave="checkLocation($data)") {{ location || "Add location" }}
-  span.validation(ng-show="isValidating") validating...
+div.loc-directive
+  div(editable-text="location" buttons="no" onaftersave="updateLocation()" ng-show="!url || !showMap"
+    onbeforesave="checkLocation($data)") {{ location || "Add location" }}
+    span.validation(ng-show="isValidating") validating...
+
+  div.location-content(ng-show="showMap && url")
+    img.map-img(ng-src="{{url}}")
+    div.content-bottom-overlay
+      span {{getText()}} &nbsp;
+      a(ng-href="{{fullUrl}}") (see map)

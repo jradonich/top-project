@@ -3,4 +3,90 @@
     border-top-color: darken(#eee, 20%);
     margin: 3px;
   }
+  .tpl-include {
+    height: 100%;
+    form.form-inline {
+      height: 100%;
+      > div {
+        height: 100%;
+      }
+      .editable-controls{
+        textarea {
+          height: @panel-height - @panel-header-height - 38;
+        }
+      }
+
+    }
+  }
+  .entry-list {
+    .list-row {
+      .list-item {
+        &.left {
+          padding-right: 0;
+        }
+        &.right {
+          padding-left:0;
+        }
+      }
+    }
+  }
+
+  .loc-directive {
+    overflow: hidden;
+  }
+  .location-content {
+    position: relative;
+    overflow: hidden;
+
+    .content-bottom-overlay {
+      opacity: .9;
+      background-color: #000000;
+      color: #FFF;
+      height: 45px;
+      position: absolute;
+      bottom: 2px;
+      left: 0;
+      right: 0;
+    }
+  }
+  //Styling to place quotes around text
+  .quoted-content {
+    height: 100%;
+    position: relative;
+    blockquote {
+      font-style: italic;
+      &:before {
+        font-style: normal;
+        display: block;
+        padding-left: 10px;
+        content: "\201C";
+        font-size: 80px;
+        position: absolute;
+        left: -10px;
+        top: -20px;
+        color: #979797;
+      }
+      &:after {
+        display: block;
+        padding-right: 20px;
+        content: "\201D";
+        font-size: 80px;
+        position: absolute;
+        right: -10px;
+        bottom: -60px;
+        color: #979797;
+      }
+      cite {
+        &:before {
+          content: "\2014 \2009";
+        }
+        color: #525252;
+        font-size: 14px;
+        display: block;
+        margin-top: 5px;
+      }
+    }
+
+  }
+
 }
