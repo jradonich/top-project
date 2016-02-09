@@ -5,8 +5,8 @@ div.list-directive
     ul
       li(ng-repeat="item in list")
         ul.list-inline(ng-click="editListItem(item, $index, $event)")
-          li.emphasis {{item.key}}
-          li {{item.value}}
+          li.emphasis.left {{item.key}}
+          li.right {{item.value}}
   div(ng-show="isEditing").entry-list
     div.table-container
       table.table.table-bordered.table-condensed

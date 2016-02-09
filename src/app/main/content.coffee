@@ -184,7 +184,7 @@ contentModule.factory('contentTypes', ["mapService", "$q", (mapService, $q) ->
   return ContentTypeBuilder
 ])
 
-contentModule.directive('list', [()->
+contentModule.directive('list', ['$timeout', ($timeout)->
   'ngInject'
   return {
     restrict: 'EA'
@@ -262,11 +262,13 @@ contentModule.directive('list', [()->
         scope.isEditing = true
         scope.forceEdit = true
 
+      #Attempt to focus in on the table item once clicked in list
       scope.editListItem = (item, index, evt) ->
-        console.log('editListItem', [item, index])
-#        $timeout(->
-#
-#        , 1)
+        tdIndex = if $(evt.target).hasClass('left') then 1 else 2
+        $timeout(->
+          td = element.find("table").find("tr:nth-child(#{index + 1}) td:nth-child(#{tdIndex})")
+          td.focus()
+        , 1)
       return
   }
 
