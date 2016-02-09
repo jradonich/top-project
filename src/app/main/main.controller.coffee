@@ -28,6 +28,10 @@ angular.module 'toptalProject'
 
     originalUser = angular.extend({}, defaultUser, User.model)
     originalUser = angular.copy(originalUser)
+    $scope.userObj = User
+
+    $scope.user
+
     $scope.user = User.model
 
 

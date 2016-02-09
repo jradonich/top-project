@@ -1,23 +1,2 @@
 div(ng-click="containerClick()" ng-class="{editing: isEditing}")
-  div(ng-show="!model.data || isEditing") Add Content...
-  div(ng-show="isEditing").entry-list
-    div.row.list-row
-      form
-        div.col-md-6.list-item.left
-          input.form-control.input-sm(type="text" placeholder="{{layout.listLeftPlaceholder}}")
-        div.col-md-6.list-item.right
-          input.form-control.input-sm(type="text" placeholder="{{layout.listRightPlaceholder}}")
-    //    input(type="submit" ng-click=""
-    //div.row.list-row(ng-repeat="listItem in listItems")
-    //  div.col-md-6.list-item.left
-    //    input.form-control.input-sm(type="text" placeholder="{{layout.listLeftPlaceholder}}")
-    //  div.col-md-6.list-item.right
-    //    input.form-control.input-sm(type="text" placeholder="{{layout.listRightPlaceholder}}")
-  div(ng-show="!isEditing && !model.data")
-    ul
-      li(ng-repeat="item in list")
-        div.row
-          div.col-md-6.col-sm-6.col-xs-6
-            span {{item.company}}
-          div.col-md-6.col-sm-6.col-xs-6
-            span {{item.skills}}
+  div(list="model.data")

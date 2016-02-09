@@ -1,4 +1,5 @@
 .content-item {
+
   hr {
     border-top-color: darken(#eee, 20%);
     margin: 3px;
@@ -18,19 +19,27 @@
 
     }
   }
-  .entry-list {
-    .list-row {
-      .list-item {
-        &.left {
-          padding-right: 0;
-        }
-        &.right {
-          padding-left:0;
-        }
-      }
-    }
-  }
 
+  .list-directive {
+    max-height: 100%;
+    margin-left: 3px;
+    margin-right: 3px;
+   .entry-list {
+     max-height: 140px;
+     .table-container {
+       height: 110px;
+       overflow-y: auto;
+     }
+     table {
+       table-layout: fixed;
+       word-wrap: break-word;
+
+     }
+     .bottom-actions {
+       height: 30px;
+     }
+   }
+  }
   .loc-directive {
     overflow: hidden;
   }

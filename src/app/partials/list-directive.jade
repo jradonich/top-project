@@ -1,0 +1,21 @@
+//div(ng-click="containerClick()" ng-class="{editing: isEditing}").row
+div.list-directive
+  div.text-center(ng-show="!hasContent() && !isEditing" ng-click="isEditing = !isEditing") Add Content...
+  div.text-left(ng-show="(hasContent() && !isEditing && !forceEdit)" ng-click="contentClicked()")
+    ul
+      li(ng-repeat="item in list")
+        ul.list-inline(ng-click="editListItem(item, $index, $event)")
+          li.emphasis {{item.key}}
+          li {{item.value}}
+  div(ng-show="isEditing").entry-list
+    div.table-container
+      table.table.table-bordered.table-condensed
+        tbody
+          tr(ng-repeat="listItem in list")
+            td.col-md-6(contenteditable strip-br="true" ng-model="listItem.key")
+            td.col-md-6(contenteditable strip-br="true" ng-model="listItem.value" ng-class="{last: $last}")
+
+
+    div.bottom-actions.pull-left
+      button.btn.btn-sm.btn-primary(ng-click="finishEdit()")
+        span.glyphicon.glyphicon-ok

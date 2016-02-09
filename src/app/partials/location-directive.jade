@@ -3,7 +3,6 @@
 div.loc-directive
   div(editable-text="location" buttons="no" onaftersave="updateLocation()" ng-show="!url || !showMap"
     onbeforesave="checkLocation($data)") {{ location || "Add location" }}
-    span.validation(ng-show="isValidating") validating...
 
   div.location-content(ng-show="showMap && url")
     img.map-img(ng-src="{{url}}")

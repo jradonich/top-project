@@ -1,4 +1,4 @@
-footer = angular.module 'footer', ['map']
+footer = angular.module('footer', [])
 
 footer.controller('FooterController', ['$scope', ($scope) ->
   'ngInject'

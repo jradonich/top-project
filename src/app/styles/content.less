@@ -24,6 +24,36 @@
 @panel-header-height: 35px;
 
 
+@inverse-color: #000;
+@inverse-text-color: #fff - @inverse-color;
+
+.inverse {
+  background-color: @inverse-color;
+  color: @inverse-text-color;
+  a {
+    color: @inverse-text-color;
+  }
+  button {
+    color: @inverse-color;
+  }
+}
+
+.break-content {
+  width: 100%;
+  .row {
+    min-height: 4em;
+    .vertical-align {
+      height: 100%;
+    }
+  }
+  button {
+    text-transform: uppercase;
+  }
+  .smaller {
+    font-size: @font-size-h5;
+  }
+}
+
 //remove default styling from angular-xeditable
 .editable-click, .editable-click:hover,
 a.editable-click, .editable-empty, .editable-empty:hover{
@@ -37,6 +67,10 @@ a.editable-click, .editable-empty, .editable-empty:hover{
   &:hover {
     border: solid 1px lightgray;
   }
+}
+
+.emphasis {
+  font-weight: bold;
 }
 
 .top-skills{
@@ -94,7 +128,7 @@ a.editable-click, .editable-empty, .editable-empty:hover{
   color: @brand-success;
 }
 .main-content-container {
-  width: 95%;
+  //width: 95%;
   .user {
     background-color: darken(@gray-lighter, 10%);
     &.row > div{

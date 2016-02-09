@@ -14,6 +14,7 @@ mapsModule.directive('location', ['mapService', '$rootScope', 'User', (map, $roo
       locationName = ""
       currentLocation = scope.location
       console.log("location directive", scope.showMap)
+
       scope.checkLocation = (formLoc) ->
         validateResults = map.validate(formLoc)
 #        scope.isValidating = true
@@ -29,17 +30,25 @@ mapsModule.directive('location', ['mapService', '$rootScope', 'User', (map, $roo
         loc = map.getFormattedAddress()
         text = "#{name} lives in #{loc}"
 
-
+      updateLocation = () ->
+        scope.url = map.display(element)
+        scope.fullUrl = map.getFullMapUrl()
+        console.log("Update location", [scope.url, scope.fullUrl])
+        if scope.showMap
+          $(element).parents('.content-item').find('.panel-head').hide()
 
       $rootScope.$on('location-set', (newLocationValue) ->
+        console.log("location-set", newLocationValue)
         currentLocation = newLocationValue
         if scope.showMap
-          scope.url = map.display(element)
-          scope.fullUrl = map.getFullMapUrl()
-
+          updateLocation()
       )
+
       scope.updateLocation = () ->
+        console.log("scope.updateLocation()", currentLocation)
         scope.location = currentLocation
+        if scope.showMap
+          updateLocation()
         return
   }
 ])

@@ -10,10 +10,6 @@ userModule.value("defaultUser", {
 
 userModule.controller 'UserController', ['$scope', '$timeout', 'User', '$rootScope', 'defaultUser',
   ($scope, $timeout, user, $rootScope, defaultUser) ->
-#    user.init()
-#    $scope.user = angular.extend({}, defaultUser, user.model)
-#
-#    console.log("UserController user: ", $scope.user)
 
     $scope.$watch('user.location', (newValue, oldValue) ->
       if newValue isnt oldValue
@@ -112,6 +108,7 @@ userModule.factory "User", ['localService', 'saveNS', (localService, saveNS) ->
 
   user.load = ->
     user.model = JSON.parse(localService.get(userSaveProperty))
+    console.log("loaded user", user.model)
     return user.model
 
   user.getFirstName = ->

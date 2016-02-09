@@ -39,62 +39,81 @@ contentModule.controller('ContentController', ['$scope', ($scope) ->
     }
   )
 
+  $scope.mySections = [
+
+  ]
+
   console.log("$scope.user in ContentController", $scope.user)
   if $scope.user.content?
     _.forEach(tmpSections, (section, key) ->
       if not section.data
-        section.data = {}
+        if section.layout.type == 'list'
+          section.data = []
+        else
+          section.data = {}
 
 
       cur = $scope.user.content[key]
-      console.log "section - #{key}"
+      console.log "section - #{key}",
       if cur
-        console.log("found value for #{key}", cur)
+        console.log("\tfound value for #{key}", cur)
         section.data = cur
       else
-        section.data = $scope.user.content[key] = {data:""}
+        section.data = $scope.user.content[key]
 
     )
     console.log("sections after loop", tmpSections)
     console.log("$scope.user after for loop", $scope.user.content)
     $scope.sections = tmpSections
 
-  $scope.$on('user.content.portfolio', (newVal, oldVal) ->
-    console.log('user.content.portfolio changed', arguments)
-  , true)
 
-  $scope.mySections = [
-
-  ]
 
 ])
 
-contentModule.directive 'contenteditablemod', ->
-  return {
-    require: 'ngModel'
-    transclude: true
-    template: '<div ng-transclude></div>'
-    link: (scope, elm, attrs, ctrl) ->
-      # view -> model
-      elm.on 'blur', ->
-        ctrl.$setViewValue elm.html()
+contentModule.directive 'contenteditable', [
+  '$sce'
+  ($sce) ->
+    {
+      restrict: 'A'
+      require: '?ngModel'
+      link: (scope, element, attrs, ngModel) ->
+        #haven't figured out a better way to do this.  Was clearing out model causing issues.
+        hasLoaded = false
+        read = ->
+          html = element.html()
+          # When we clear the content editable the browser leaves a <br> behind
+          # If strip-br attribute is provided then we strip this out
+          if attrs.stripBr and html == '<br>'
+            html = ''
+          if html or hasLoaded
+            hasLoaded = true
+            ngModel.$setViewValue html
+          return
+
+        if !ngModel
+          return
+        # do nothing if no ng-model
+        # Specify how UI should be updated
+
+        ngModel.$render = ->
+          element.html $sce.getTrustedHtml(ngModel.$viewValue or '')
+          return
+
+        # Listen for change events to enable binding
+        element.on 'blur keyup change', ->
+          scope.$evalAsync read
+          return
+        read()
         return
-      # model -> view
 
-      ctrl.$render = ->
-        elm.html ctrl.$viewValue
-        return
-
-      # load init value from DOM
-      ctrl.$setViewValue elm.html()
-      return
-  }
-
+    }
+]
 
 contentModule.factory('contentTypes', ["mapService", "$q", (mapService, $q) ->
   class ContentType
     constructor: (@type="text", @content="") ->
       @inputType = ""
+      @defaultValue = ""
 
     addContent: (content) ->
       @content = content
@@ -125,9 +144,18 @@ contentModule.factory('contentTypes', ["mapService", "$q", (mapService, $q) ->
 
   class ListContentType extends ContentType
     @columns = 2
+
+
     constructor: () ->
       super("list")
       @inputType = "list"
+      @defaultValue = [{
+        key: ""
+        value: ""
+      }]
+      @listItemObj =
+        key: ""
+        value: ""
 
 
   class FileContentType extends ContentType
@@ -156,17 +184,131 @@ contentModule.factory('contentTypes', ["mapService", "$q", (mapService, $q) ->
   return ContentTypeBuilder
 ])
 
+contentModule.directive('list', [()->
+  'ngInject'
+  return {
+    restrict: 'EA'
+    require: '^contentItem'
+    scope:
+      list: '='
+    templateUrl: "app/partials/list-directive.html"
+    link: (scope, element, attrs, contentItemCtrl) ->
+      wasKeyDownTab = undefined
+      console.log("list directive CONTROLLER", contentItemCtrl)
+
+      console.log("scope.list: ", JSON.stringify(scope.list))
+      console.log("scope.parent", scope.$parent)
+#      scope.content
+      scope.hasContent = () ->
+        if scope.list.length == 0
+          return false
+        if scope.list.length > 1
+          return true
+        else
+          return _.some(scope.list, 'key')
+
+
+      scope.$watch(scope.list[0].key, (newV, oldV) ->
+        if not newV
+          console.trace('list set to empty')
+      , true)
+
+
+      element.on('keydown', (evt)->
+        isTab = evt.keyCode == 9 and not evt.shiftKey #ignore 'back' tab
+        isLast = $(evt.target).hasClass('last')
+        isEnter = evt.keyCode == 13
+
+        if isLast and isTab
+          evtElement = $(evt)
+          wasKeyDownTab = true
+          scope.list.push(angular.copy(contentItemCtrl.type.listItemObj))
+          scope.$apply(->
+            evtElement.next('tr td').focus()
+          )
+
+        if isEnter
+          evt.preventDefault()
+      )
+
+      element.on('keyup', (evt) ->
+        #handler for enter and tab key
+        isEnter = evt.keyCode == 13
+        isLast = $(evt.target).hasClass('last')
+
+        if isEnter and isLast
+          console.log("enter key and last item in list.  Adding new item")
+          # last item in list.  Add new empty row
+          scope.list.push(angular.copy(contentItemCtrl.type.listItemObj))
+          submit()
+        wasKeyDownTab = false
+      )
+
+      submit = () ->
+        scope.finishEdit()
+
+      # Removes all 'empty' values (key: '', value: '') from list
+      cleanList = (list) ->
+        _.remove(list, (item) ->
+          item.key == "" and item.value == ""
+        )
+
+      scope.finishEdit = () ->
+        scope.isEditing = false
+        scope.forceEdit = false
+        cleanList(scope.list)
+
+      scope.contentClicked = () ->
+        scope.isEditing = true
+        scope.forceEdit = true
+
+      scope.editListItem = (item, index, evt) ->
+        console.log('editListItem', [item, index])
+#        $timeout(->
+#
+#        , 1)
+      return
+  }
+
+])
+
 contentModule.directive 'contentItem', ['contentTypes', '$rootScope', 'User',
   (contentTypes, $rootScope, User)->
     'ngInject'
     return {
       restrict: 'EA'
+      require: 'contentItem'
       scope:
         layout: '=content'
         model: '=contentMod'
       templateUrl: "app/partials/content-item-directive.html"
+      controller: ['$scope', ($scope) ->
+#        console.log("contentItem.controller")
+
+        layout = $scope.layout
+        this.type = new contentTypes(layout.type)
+
+        console.log("contentItem.controller scope: ", $scope.model)
+        if not $scope.model.data
+          $scope.model.data = angular.copy(this.type.defaultValue)
+
+
+        $scope.onContentElementShow = () ->
+          console.log("onContentElementShow()")
+          $scope.isEditing = true
+
+        $scope.containerClick = () ->
+          console.log("container click")
+          $scope.isEditing = true
+
+        $scope.contentClicked
+
+        this.containerClick = $scope.containerClick
+        return
+      ]
       link: (scope, element, attrs) ->
         layoutObj = scope.layout
+        console.log("contentItem link", scope)
         if layoutObj.type
           console.log("Scope.content - #{layoutObj.type}", layoutObj)
         else
@@ -184,12 +326,6 @@ contentModule.directive 'contentItem', ['contentTypes', '$rootScope', 'User',
           scope.options = typeObject.options
           scope.getRadioValue = (item) ->
             return item
-
-        scope.containerClick = () ->
-          scope.isEditing = true
-
-        scope.onContentElementShow = () ->
-          scope.isEditing = true
 
 
         scope.bodyClick = () ->
