@@ -3,21 +3,21 @@
 div.row.user
   div.col-md-3.col-sm-4.col-xs-12.vertical-align.text-center
     //div.row
-    div.display-component(ng-show="user.image" ng-click="editImage()")
-      img.img-fluid(ng-show="user.image" ng-src="{{user.image}}" alt="")
-    div(ng-show="!user.image")
-      button.btn.btn-default.load-user-image(ngf-select="loadImageFile($files, $invalidFiles)" single accept="image/*"
-        ngf-max-height="1000" ngf-max-size="1MB") Add Profile Image...
+    div.display-component(data-ng-show="user.image" ng-click="editImage()")
+      img.user-img.img-fluid(data-ng-show="user.image" ng-src="{{user.image}}" alt="")
+    div(data-ng-show="!user.image")
+      button.btn.btn-default.load-user-image(data-ngf-select="loadImageFile($files, $invalidFiles)" data-ngf-no-object-url="true"
+        single accept="image/*" ngf-max-height="1000" ngf-max-size="1MB") Add Profile Image...
 
   div.col-md-6.col-sm-8.col-xs-12
     div.col-md-12
-        h3(class="user-name" editable-text="user.name" buttons="no") {{ user.name || "Add name" }}
+        h3(class="user-name" data-editable-text="user.name" buttons="no") {{ user.name || "Add name" }}
     //div.row
     div.col-md-12
-      div(location="user.location" e-placeholder="Add Location")
+      div(data-location="user.location" data-e-placeholder="Add Location")
     //div.row
     div.col-md-12
-      div(editable-text="user.languages" buttons="no" e-placeholder="Add Languages...") {{ user.languages || "Add languages" }}
+      div(data-editable-text="user.languages" buttons="no" e-placeholder="Add Languages...") {{ user.languages || "Add languages" }}
 
     div.skills.row
       ul.list-inline.skills-list
@@ -48,9 +48,9 @@ div.row.user
     //div.view(ng-show={{isView}})
     div.row
       div.col-md-6.col-xs-6
-        button.btn.btn-block.btn-primary(ng-click="updateProfile()", ng-disabled="hasChanged()") Save Profile
+        button.btn.btn-block.btn-primary(ng-click="updateProfile()", data-ng-disabled="hasChanged()") Save Profile
       div.col-md-6.col-xs-6
-        button.btn.btn-block.btn-default(ng-disabled="!isProfileComplete()") Publish Profile
+        button.btn.btn-block.btn-default(data-ng-disabled="!isProfileComplete()") Publish Profile
     div.row
       div.col-md-12.text-muted
         span.text-center (You can only publish a completed profile)

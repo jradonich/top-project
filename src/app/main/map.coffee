@@ -8,12 +8,16 @@ mapsModule.directive('location', ['mapService', '$rootScope', 'User', (map, $roo
     scope:
       location: "="
       showMap: "="
-    templateUrl: "app/partials/location-directive.html"
-    link: (scope, element, attrs) ->
-#      map = new MapContentType()
-      locationName = ""
+    templateUrl: "app/partials/location-directive.html",
+    controller: ['$scope', (scope) ->
+
+      this.setLocation = (loc) ->
+        console.log("ctrl setLocation", loc)
+        scope.url = loc
+      return
+    ]
+    link: (scope, element, attrs, ctrl) ->
       currentLocation = scope.location
-      console.log("location directive", scope.showMap)
 
       scope.checkLocation = (formLoc) ->
         validateResults = map.validate(formLoc)
@@ -28,16 +32,22 @@ mapsModule.directive('location', ['mapService', '$rootScope', 'User', (map, $roo
       scope.getText = () ->
         name = User.getFirstName()
         loc = map.getFormattedAddress()
-        text = "#{name} lives in #{loc}"
+        "#{name} lives in #{loc}"
 
       updateLocation = () ->
-        scope.url = map.display(element)
-        scope.fullUrl = map.getFullMapUrl()
-        console.log("Update location", [scope.url, scope.fullUrl])
-        if scope.showMap
-          $(element).parents('.content-item').find('.panel-head').hide()
+        map.getLocation(currentLocation).then(() ->
+          url = map.display(element)
+          scope.url = url
+          scope.location = currentLocation
+          scope.fullUrl = map.getFullMapUrl()
+          console.log("Update location", [scope.url, scope.fullUrl])
+          if scope.showMap
+            $(element).parents('.content-item').find('.panel-head').hide()
 
-      $rootScope.$on('location-set', (newLocationValue) ->
+        )
+
+
+      $rootScope.$on('location-set', (evt, newLocationValue) ->
         console.log("location-set", newLocationValue)
         currentLocation = newLocationValue
         if scope.showMap
@@ -47,9 +57,13 @@ mapsModule.directive('location', ['mapService', '$rootScope', 'User', (map, $roo
       scope.updateLocation = () ->
         console.log("scope.updateLocation()", currentLocation)
         scope.location = currentLocation
+        ctrl.setLocation(currentLocation)
         if scope.showMap
           updateLocation()
         return
+
+      if currentLocation
+        updateLocation()
   }
 ])
 
@@ -73,6 +87,12 @@ mapsModule.factory('mapService', ['$q', 'apiKey', ($q, apiKey) ->
     return cityLocation
 
   service = {
+
+    getLocation: (location) ->
+      if not previousLookup
+        previousLookup = service.validate(location)
+      return $q.when(previousLookup)
+
     validate: (location) ->
       defer = $q.defer()
 
@@ -91,7 +111,7 @@ mapsModule.factory('mapService', ['$q', 'apiKey', ($q, apiKey) ->
       location = previousLookup.geometry.location
       if element?
 #        debugger
-        size = [element.innerWidth(), 200]
+        size = [element.innerWidth(), 210]
         size = "#{size[0]}x#{size[1]}"
       return service.getImageUrl(location, size)
 

@@ -15,7 +15,6 @@ div.container
       div.row
         div.col-md-3(ng-repeat="mysection in mySections")
           content-item(content="mysection")
-      //pre {{sections | json}}
       div.row
         div.well-lg.inverse.break-content
           div.row
@@ -26,6 +25,9 @@ div.container
               span.smaller.text-right Or as a developer
                 button.btn.btn-default.btn-sm
                   span.glyphicon.glyphicon-play-circle
+
+
+  //Top Skills section
   div.row
     div.top-skills(ng-controller="FooterController")
       h4.text-center Top skills on toptal

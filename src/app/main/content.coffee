@@ -7,11 +7,12 @@ contentModule.controller('ContentController', ['$scope', ($scope) ->
     portfolio:
       name: "Portfolio"
       type: 'list'
-      listLeftPlaceholder: "Project Name"
-      listRightPlaceholder: "Skills Used"
+      placeholders: ['Project Name', 'Skills Used']
+      subhead: true
     experience:
       name: "Experience"
       type: 'list'
+      placeholders: ['Skill', 'Years of Experience']
     sampleCodeAndAlgorithms:
       name: "Sample code and algorithms"
     availability:
@@ -33,15 +34,17 @@ contentModule.controller('ContentController', ['$scope', ($scope) ->
 
 
   tmpSections = {}
-  _.forEach(sections, (section, prop, obj) ->
+  _.forEach(sections, (section, prop) ->
     tmpSections[prop] = {
       layout: angular.extend({}, section)
     }
   )
 
-  $scope.mySections = [
-
-  ]
+  $scope.mySections = _.times(4, ()->
+    return {
+      layout: ''
+    }
+  )
 
   console.log("$scope.user in ContentController", $scope.user)
   if $scope.user.content?
@@ -109,7 +112,7 @@ contentModule.directive 'contenteditable', [
     }
 ]
 
-contentModule.factory('contentTypes', ["mapService", "$q", (mapService, $q) ->
+contentModule.factory('contentTypes', ["mapService", "$q", "User", (mapService, $q, User) ->
   class ContentType
     constructor: (@type="text", @content="") ->
       @inputType = ""
@@ -141,10 +144,10 @@ contentModule.factory('contentTypes', ["mapService", "$q", (mapService, $q) ->
       #noinspection JSUnresolvedVariable
       mapService.display(element)
     loadContent: () ->
+#      mod = User.init()
 
   class ListContentType extends ContentType
     @columns = 2
-
 
     constructor: () ->
       super("list")
@@ -156,6 +159,7 @@ contentModule.factory('contentTypes', ["mapService", "$q", (mapService, $q) ->
       @listItemObj =
         key: ""
         value: ""
+
 
 
   class FileContentType extends ContentType
@@ -194,11 +198,14 @@ contentModule.directive('list', ['$timeout', ($timeout)->
     templateUrl: "app/partials/list-directive.html"
     link: (scope, element, attrs, contentItemCtrl) ->
       wasKeyDownTab = undefined
-      console.log("list directive CONTROLLER", contentItemCtrl)
+      layout = contentItemCtrl.layout
 
-      console.log("scope.list: ", JSON.stringify(scope.list))
-      console.log("scope.parent", scope.$parent)
-#      scope.content
+      masterData = angular.copy(scope.list)
+
+      scope.inputPlaceholders =
+        left: layout.placeholders[0] or ""
+        right: layout.placeholders[1] or ""
+
       scope.hasContent = () ->
         if scope.list.length == 0
           return false
@@ -206,13 +213,6 @@ contentModule.directive('list', ['$timeout', ($timeout)->
           return true
         else
           return _.some(scope.list, 'key')
-
-
-      scope.$watch(scope.list[0].key, (newV, oldV) ->
-        if not newV
-          console.trace('list set to empty')
-      , true)
-
 
       element.on('keydown', (evt)->
         isTab = evt.keyCode == 9 and not evt.shiftKey #ignore 'back' tab
@@ -241,11 +241,21 @@ contentModule.directive('list', ['$timeout', ($timeout)->
           # last item in list.  Add new empty row
           scope.list.push(angular.copy(contentItemCtrl.type.listItemObj))
           submit()
-        wasKeyDownTab = false
+
+        if evt.keyCode == 27 #esc key
+          console.log "esc key pressed.  cancel()"
+          cancel()
       )
+
+      cancel = () ->
+        console.log("reverting scope.list", scope.list)
+        console.log("to", JSON.stringify(masterData))
+        scope.list = angular.copy(masterData)
+        submit()
 
       submit = () ->
         scope.finishEdit()
+        scope.$apply()
 
       # Removes all 'empty' values (key: '', value: '') from list
       cleanList = (list) ->
@@ -264,11 +274,14 @@ contentModule.directive('list', ['$timeout', ($timeout)->
 
       #Attempt to focus in on the table item once clicked in list
       scope.editListItem = (item, index, evt) ->
+        #jquery nth child is 1 based
         tdIndex = if $(evt.target).hasClass('left') then 1 else 2
         $timeout(->
-          td = element.find("table").find("tr:nth-child(#{index + 1}) td:nth-child(#{tdIndex})")
-          td.focus()
+          tdInput = element.find("table").find("tr:nth-child(#{index + 1}) td:nth-child(#{tdIndex}) input")
+          tdInput.focus().select()
         , 1)
+
+
       return
   }
 
@@ -289,21 +302,35 @@ contentModule.directive 'contentItem', ['contentTypes', '$rootScope', 'User',
 
         layout = $scope.layout
         this.type = new contentTypes(layout.type)
+        this.layout = layout
 
         console.log("contentItem.controller scope: ", $scope.model)
         if not $scope.model.data
           $scope.model.data = angular.copy(this.type.defaultValue)
 
+        $scope.showsub = $scope.layout.subhead or false
+
+        layout.getSubHeading = () ->
+          listValues = []
+          result = ""
+          if $scope.showsub
+            vals = $scope.model.data
+            if _.isArray(vals)
+              _.forEach(vals, (val) ->
+                listValues = listValues.concat(val.value.split(','))
+              )
+
+              listValues = _.take(_.uniq(listValues), 3)
+
+              result += listValues.join(', ')
+          return result
 
         $scope.onContentElementShow = () ->
-          console.log("onContentElementShow()")
           $scope.isEditing = true
 
         $scope.containerClick = () ->
-          console.log("container click")
           $scope.isEditing = true
 
-        $scope.contentClicked
 
         this.containerClick = $scope.containerClick
         return
@@ -311,6 +338,8 @@ contentModule.directive 'contentItem', ['contentTypes', '$rootScope', 'User',
       link: (scope, element, attrs) ->
         layoutObj = scope.layout
         console.log("contentItem link", scope)
+        if layoutObj.type == 'map'
+          console.log "\n\n\n", scope.model
         if layoutObj.type
           console.log("Scope.content - #{layoutObj.type}", layoutObj)
         else
@@ -330,6 +359,12 @@ contentModule.directive 'contentItem', ['contentTypes', '$rootScope', 'User',
             return item
 
 
+        if layoutObj.notFromUser
+          scope.requireWhoSaid = true
+          scope.template = "app/partials/content-item-types/.html"
+          scope.saidBy = ""
+          scope.model.data.fromUser = ""
+
         scope.bodyClick = () ->
           scope.isEditing = false
           console.log("clicked #{scope.model.name} - ", typeObject)
@@ -343,10 +378,11 @@ contentModule.directive 'contentItem', ['contentTypes', '$rootScope', 'User',
                   scope.model.url = typeObject.render()
               )
 
-        if scope.layout.updateOnEvent
-          $rootScope.$on(scope.layout.updateOnEvent, (newVal) ->
-            scope.model.url = typeObject.render()
-          )
+#        if scope.layout.updateOnEvent
+#          $rootScope.$on(scope.layout.updateOnEvent, (newVal, oldVal) ->
+#            console.log("directive new val", [newVal, oldVal])
+#            scope.model.url = typeObject.render()
+#          )
     }
 ]
 

@@ -5,8 +5,13 @@ var gulp = require('gulp');
 var conf = require('./conf');
 
 var browserSync = require('browser-sync');
+var w3cjs = require('gulp-w3cjs');
+
+var debug = require('gulp-debug');
+var htmlify = require('gulp-angular-htmlify');
 
 var $ = require('gulp-load-plugins')();
+
 
 gulp.task('markups', function() {
   function renameToHtml(path) {
@@ -18,4 +23,20 @@ gulp.task('markups', function() {
     .pipe($.rename(renameToHtml))
     .pipe(gulp.dest(path.join(conf.paths.tmp, '/serve/app/')))
     .pipe(browserSync.stream());
+});
+
+
+gulp.task('w3cjs', [], function () {
+  return gulp.src(path.join(conf.paths.src, '/app/**/*.jade'))
+      .pipe($.consolidate('jade', { basedir: conf.paths.src, doctype: 'html', pretty: '  ' })).on('error', conf.errorHandler('Jade'))
+      .pipe(htmlify())
+      .pipe(debug())
+      .pipe(w3cjs())
+      .pipe(w3cjs.reporter())
+      .pipe(gulp.dest('build/'));
+  //return gulp.src(path.join(conf.paths.tmp, '/serve/app/**/*.html'))
+  ////return gulp.src()
+  //  .pipe(debug())
+  //  .pipe(w3cjs())
+  //  .pipe(w3cjs.reporter());
 });

@@ -8,8 +8,8 @@ userModule.value("defaultUser", {
         status: "Full-Time"
 })
 
-userModule.controller 'UserController', ['$scope', '$timeout', 'User', '$rootScope', 'defaultUser',
-  ($scope, $timeout, user, $rootScope, defaultUser) ->
+userModule.controller 'UserController', ['$scope', '$timeout', 'User', '$rootScope', 'Upload',
+  ($scope, $timeout, user, $rootScope, Upload) ->
 
     $scope.$watch('user.location', (newValue, oldValue) ->
       if newValue isnt oldValue
@@ -20,7 +20,7 @@ userModule.controller 'UserController', ['$scope', '$timeout', 'User', '$rootSco
     $scope.currentSkill = {}
     isEditingCurrentSkill = false
 
-    $scope.editSkill = (skillToEdit, index) ->
+    $scope.editSkill = (skillToEdit) ->
       $scope.addSkill(skillToEdit)
       isEditingCurrentSkill = true
 
@@ -82,9 +82,9 @@ userModule.controller 'UserController', ['$scope', '$timeout', 'User', '$rootSco
 
     $scope.loadImageFile = (file) ->
       if file? and file.length
-        console.log("handle image selected", file[0])
-        $scope.user.image = file[0].$ngfBlobUrl
-
+        Upload.dataUrl(file[0], true).then((url) ->
+          $scope.user.image = url
+        )
   ]
 
 

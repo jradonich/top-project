@@ -1,9 +1,9 @@
 //
    Created by jamieradonich on 2/5/16.
-div.quoted-content(editable-textarea="model.data" e-placeholder="{{layout.defaultContent || 'Add ' + (layout.name | lowercase) + '...'}}"
+div.quoted-content(data-editable-textarea="model.data" data-e-placeholder="{{layout.defaultContent || 'Add ' + (layout.name | lowercase) + '...'}}"
   onshow="onContentElementShow()" onhide="bodyClick(true)")
-    span(ng-show="!model.data") Add Content...
-    span.content-display(ng-show="model.data")
+    span(data-ng-show="!model.data") Add Content...
+    span.content-display(data-ng-show="model.data")
       blockquote
         p {{model.data}}
         cite.pull-right {{user.getUsername()}}
