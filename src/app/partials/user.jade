@@ -1,23 +1,23 @@
 //
    Created by jamieradonich on 2/1/16.
 div.row.user
-  div.col-md-3.col-sm-4.vertical-align
+  div.col-md-3.col-sm-4.col-xs-12.vertical-align.text-center
+    //div.row
     div.display-component(ng-show="user.image" ng-click="editImage()")
       img.img-fluid(ng-show="user.image" ng-src="{{user.image}}" alt="")
     div(ng-show="!user.image")
       button.btn.btn-default.load-user-image(ngf-select="loadImageFile($files, $invalidFiles)" single accept="image/*"
         ngf-max-height="1000" ngf-max-size="1MB") Add Profile Image...
 
-  div.col-md-6.col-sm-8
-    div.row
-      div.col-md-12
+  div.col-md-6.col-sm-8.col-xs-12
+    div.col-md-12
         h3(class="user-name" editable-text="user.name" buttons="no") {{ user.name || "Add name" }}
-    div.row
-      div.col-md-12
-        div(location="user.location" e-placeholder="Add Location")
-    div.row
-      div.col-md-12
-        div(editable-text="user.languages" buttons="no" e-placeholder="Add Languages...") {{ user.languages || "Add languages" }}
+    //div.row
+    div.col-md-12
+      div(location="user.location" e-placeholder="Add Location")
+    //div.row
+    div.col-md-12
+      div(editable-text="user.languages" buttons="no" e-placeholder="Add Languages...") {{ user.languages || "Add languages" }}
 
     div.skills.row
       ul.list-inline.skills-list
@@ -31,34 +31,39 @@ div.row.user
         div.addASkillContainer(ng-show="isAddingSkill")
           form.skill-form.form-inline
             div.row
-              div.col-md-7
+              div.col-md-7.col-xs-5
                 input.input-sm.form-control(type="text" name="skillName" placeholder="Add Skill" ng-model="skillCurrentlyBeingAdded.skillName")
-              div.col-md-4
+              div.col-md-4.col-xs-5
                 div.control-group
                   select.input-sm.form-control(ng-model="skillCurrentlyBeingAdded.skillLevel" name="skillLevel")
                     option(value="Expert") Expert
                     option(value="Advanced") Advanced
                     option(value="Intermediate") Intermediate
                     option(value="Beginner") Beginner
-              div.col-md-1
-                button.btn.btn-link.btn-approve(ng-click="addCurrentSkill(skillCurrentlyBeingAdded)")
+              div.col-md-1.col-xs-1
+                button.btn.btn-link.btn-sm.btn-approve(ng-click="addCurrentSkill(skillCurrentlyBeingAdded)")
                   span.glyphicon.glyphicon-ok-sign
 
-  div.col-md-3.actions
+  div.col-md-3.actions.col-xs-12.edit
     //div.view(ng-show={{isView}})
-    div.edit
-      div.data-actions.row
-        div.col-md-6
-          button.btn.btn-block.btn-primary(ng-click="updateProfile()", ng-disabled="hasChanged()") Save Profile
-        div.col-md-6
-          button.btn.btn-block.btn-default(ng-disabled="!isProfileComplete()") Publish Profile
-      div.row
-        div.text-muted (You can only publish a completed profile)
-      //div.row.pin-bottom
-      //  div.col-md-12
-      //    button.btn.btn-primary
-      //      span.glyphicon.glyphicon-open
-      //      span  Upload Resume
+    div.row
+      div.col-md-6.col-xs-6
+        button.btn.btn-block.btn-primary(ng-click="updateProfile()", ng-disabled="hasChanged()") Save Profile
+      div.col-md-6.col-xs-6
+        button.btn.btn-block.btn-default(ng-disabled="!isProfileComplete()") Publish Profile
+    div.row
+      div.col-md-12.text-muted
+        span.text-center (You can only publish a completed profile)
+
+    div.row.hidden-xs
+      div.col-md-6.col-md-offset-3.pin-bottom.visible-md.visible-lg
+        button.btn.btn-primary
+          span.glyphicon.glyphicon-open
+          span  Upload Resume
+      div.col-sm-12.visible-sm.col-xs-12.visible-xs
+        button.btn.btn-primary
+          span.glyphicon.glyphicon-open
+          span  Upload Resume
 
 
 
