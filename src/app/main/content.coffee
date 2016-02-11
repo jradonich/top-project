@@ -15,6 +15,7 @@ contentModule.controller('ContentController', ['$scope', ($scope) ->
       placeholders: ['Skill', 'Years of Experience']
     sampleCodeAndAlgorithms:
       name: "Sample code and algorithms"
+      noquote: true
     availability:
       name: "Availability"
       type: 'availability'
@@ -42,7 +43,10 @@ contentModule.controller('ContentController', ['$scope', ($scope) ->
 
   $scope.mySections = _.times(4, ()->
     return {
-      layout: ''
+      layout: {
+
+      }
+      data: ""
     }
   )
 
@@ -112,7 +116,7 @@ contentModule.directive 'contenteditable', [
     }
 ]
 
-contentModule.factory('contentTypes', ["mapService", "$q", "User", (mapService, $q, User) ->
+contentModule.factory('contentTypes', ["mapService", "$q", (mapService, $q) ->
   class ContentType
     constructor: (@type="text", @content="") ->
       @inputType = ""
@@ -335,11 +339,8 @@ contentModule.directive 'contentItem', ['contentTypes', '$rootScope', 'User',
         this.containerClick = $scope.containerClick
         return
       ]
-      link: (scope, element, attrs) ->
+      link: (scope) ->
         layoutObj = scope.layout
-        console.log("contentItem link", scope)
-        if layoutObj.type == 'map'
-          console.log "\n\n\n", scope.model
         if layoutObj.type
           console.log("Scope.content - #{layoutObj.type}", layoutObj)
         else
@@ -347,6 +348,7 @@ contentModule.directive 'contentItem', ['contentTypes', '$rootScope', 'User',
 
         typeObject = new contentTypes(layoutObj.type)
         scope.template = "app/partials/content-item-types/#{typeObject.inputType || 'default'}.html"
+        scope.noquote = layoutObj.noquote
         console.log("\ttypeObject", typeObject)
         scope.layout.inputType = typeObject.inputType || ""
         scope.isEditing = false
@@ -360,10 +362,8 @@ contentModule.directive 'contentItem', ['contentTypes', '$rootScope', 'User',
 
 
         if layoutObj.notFromUser
-          scope.requireWhoSaid = true
-          scope.template = "app/partials/content-item-types/.html"
-          scope.saidBy = ""
-          scope.model.data.fromUser = ""
+          scope.template = "app/partials/content-item-types/note.html"
+
 
         scope.bodyClick = () ->
           scope.isEditing = false
@@ -377,12 +377,6 @@ contentModule.directive 'contentItem', ['contentTypes', '$rootScope', 'User',
                 if isValid
                   scope.model.url = typeObject.render()
               )
-
-#        if scope.layout.updateOnEvent
-#          $rootScope.$on(scope.layout.updateOnEvent, (newVal, oldVal) ->
-#            console.log("directive new val", [newVal, oldVal])
-#            scope.model.url = typeObject.render()
-#          )
     }
 ]
 

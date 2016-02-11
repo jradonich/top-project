@@ -3,11 +3,11 @@
 div.row.user
   div.col-md-3.col-sm-4.col-xs-12.vertical-align.text-center
     //div.row
-    div.display-component(data-ng-show="user.image" ng-click="editImage()")
-      img.user-img.img-fluid(data-ng-show="user.image" ng-src="{{user.image}}" alt="")
+    div.display-component(data-ng-show="user.image" data-ng-click="editImage()")
+      img.user-img.img-fluid(data-ng-show="user.image" data-ng-src="{{user.image}}" alt="")
     div(data-ng-show="!user.image")
       button.btn.btn-default.load-user-image(data-ngf-select="loadImageFile($files, $invalidFiles)" data-ngf-no-object-url="true"
-        single accept="image/*" ngf-max-height="1000" ngf-max-size="1MB") Add Profile Image...
+        single data-accept="image/*" data-ngf-max-height="1000" data-ngf-max-size="1MB") Add Profile Image...
 
   div.col-md-6.col-sm-8.col-xs-12
     div.col-md-12
@@ -55,12 +55,12 @@ div.row.user
       div.col-md-12.text-muted
         span.text-center (You can only publish a completed profile)
 
-    div.row.hidden-xs
-      div.col-md-6.col-md-offset-3.pin-bottom.visible-md.visible-lg
+    div.row
+      div.col-md-12.pin-bottom.visible-md.visible-lg.text-center
         button.btn.btn-primary
           span.glyphicon.glyphicon-open
           span  Upload Resume
-      div.col-sm-12.visible-sm.col-xs-12.visible-xs
+      div.col-xs-12.visible-xs.visible-sm.text-center
         button.btn.btn-primary
           span.glyphicon.glyphicon-open
           span  Upload Resume

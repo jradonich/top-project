@@ -7,13 +7,13 @@ div.container
   div.row
     div.content-container(ng-controller="ContentController")
       div.row
-        div.col-md-3.content-container-item(ng-repeat="section in sections")
+        div.col-md-3.col-sm-6.content-container-item(ng-repeat="section in sections")
           div.content-panel(content-item content-mod="section.data" content="section.layout")
 
       h2.row.text-center Let me introduce myself ...
 
       div.row
-        div.col-md-3(ng-repeat="mysection in mySections")
+        div.col-md-3.col-sm-6(ng-repeat="mysection in mySections")
           content-item(content="mysection")
       div.row
         div.well-lg.inverse.break-content

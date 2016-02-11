@@ -20,6 +20,33 @@
     }
   }
 
+  .panel-form {
+    height: @panel-height - @panel-header-height !important;
+    position: relative;
+    > .row {
+      .paddinglr(10px);
+
+      &.bottom-actions {
+        //padding-left: 25px;
+        padding-top: 3px;
+      }
+    }
+    .row {
+
+    }
+    textarea {
+      height: 95px;
+    }
+    textarea, input {
+      width: 100%;
+      padding: 3px;
+    }
+    .bottom-actions {
+      bottom: 0;
+      margin-left: 1px;
+      height: 30px;
+    }
+  }
   .list-directive {
     max-height: 100%;
     margin-left: 3px;

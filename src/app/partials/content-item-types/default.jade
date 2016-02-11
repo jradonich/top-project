@@ -4,6 +4,7 @@ div.quoted-content(data-editable-textarea="model.data" data-e-placeholder="{{lay
   onshow="onContentElementShow()" onhide="bodyClick(true)")
     span(data-ng-show="!model.data") Add Content...
     span.content-display(data-ng-show="model.data")
-      blockquote
+      p(data-ng-show="noquote") {{model.data}}
+      blockquote(data-ng-show="!noquote")
         p {{model.data}}
         cite.pull-right {{user.getUsername()}}

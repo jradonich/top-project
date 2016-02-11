@@ -1,0 +1,25 @@
+//
+   Created by jamieradonich on 2/10/16.
+
+span(data-ng-show="!isEditing && !model.data" data-ng-click="containerClick()") Add Content...
+div(data-ng-show="isEditing")
+  form.panel-form
+    div.row
+      div.col-xs-12
+        div.row
+          div.col-xs-12
+            textarea.form-control(placeholder="{{layout.defaultContent || 'Add ' + (layout.name | lowercase) + '...'}}"
+              ng-model="model.data.content")
+        div.row
+          div.col-xs-12
+            input.form-control(type="text" ng-model="model.data.citation" placeholder="Said by...")
+    div.row.bottom-actions
+      btn.btn.btn-primary.btn-sm.pull-left(type="submit" ng-click="isEditing = false")
+        span.glyphicon.glyphicon-ok
+
+div.quoted-content(data-ng-show="!isEditing" data-ng-click="containerClick()")
+  span(data-ng-show="!model.data")
+  span.content-display(data-ng-show="model.data")
+    blockquote
+      p {{model.data.content}}
+      cite.pull-right {{model.data.citation}}
