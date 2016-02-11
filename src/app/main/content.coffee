@@ -63,10 +63,10 @@ contentModule.controller('ContentController', ['$scope', ($scope) ->
           section.data = {}
 
 
-      cur = $scope.user[sectionType][key]
-      console.log "section - #{key}",
+        cur = $scope.user[sectionType][key]
+#      console.log "section - #{key}",
         if cur
-          console.log("\tfound value for #{key}", cur)
+#          console.log("\tfound value for #{key}", cur)
           section.data = cur
         else
           section.data = $scope.user[sectionType][key]
