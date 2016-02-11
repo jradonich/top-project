@@ -41,18 +41,21 @@ contentModule.controller('ContentController', ['$scope', ($scope) ->
     }
   )
 
-  $scope.mySections = _.times(4, ()->
-    return {
-      layout: {
 
-      }
-      data: ""
+  mySections = _.times(4, ->
+    return  {
+        layout: {}
+        data: {}
     }
   )
 
+
+  console.log("mysections: ", $scope.mySections)
+
   console.log("$scope.user in ContentController", $scope.user)
-  if $scope.user.content?
-    _.forEach(tmpSections, (section, key) ->
+
+  populateSections = (sects, sectionType="content") ->
+    _.forEach(sects, (section, key) ->
       if not section.data
         if section.layout.type == 'list'
           section.data = []
@@ -60,20 +63,35 @@ contentModule.controller('ContentController', ['$scope', ($scope) ->
           section.data = {}
 
 
-      cur = $scope.user.content[key]
+      cur = $scope.user[sectionType][key]
       console.log "section - #{key}",
-      if cur
-        console.log("\tfound value for #{key}", cur)
-        section.data = cur
-      else
-        section.data = $scope.user.content[key]
+        if cur
+          console.log("\tfound value for #{key}", cur)
+          section.data = cur
+        else
+          section.data = $scope.user[sectionType][key]
 
     )
+
+  if $scope.user.content?
+    populateSections(tmpSections)
+
+#  console.log("populating mysects")
+#  debugger
+#  populateSections(mySections, 'mysections')
+  console.log("mysections : ", mySections)
+  if $scope.user
     console.log("sections after loop", tmpSections)
     console.log("$scope.user after for loop", $scope.user.content)
     $scope.sections = tmpSections
 
+    mySections[2] = $scope.user.content.mostAmazing
 
+    console.log("MOST AMAZING", mySections[2])
+
+    mySections[3].data = $scope.user.location
+
+    $scope.mySections = mySections
 
 ])
 
@@ -190,6 +208,44 @@ contentModule.factory('contentTypes', ["mapService", "$q", (mapService, $q) ->
 
 
   return ContentTypeBuilder
+])
+
+
+
+contentModule.directive('mySectionItem', ['locationService', 'User', 'mapService', (locationService, User, map)->
+  'ngInject'
+  return {
+    restrict: 'EA'
+    scope:
+      sectionContent: '='
+      sectionClone: "="
+      modelWatch: "&"
+    templateUrl: "app/partials/mysection.html"
+    link: (scope) ->
+      scope.data = ""
+      scope.getText = () ->
+        return "#{User.getFirstName()} lives in #{scope.data}"
+
+      update = (value) ->
+        locationService.getCityImage(value).then((url) ->
+          console.log("cityimage result", url)
+          scope.url = url
+          map.getLocation(value).then(() ->
+            scope.fullUrl = map.getFullMapUrl()
+          )
+        )
+
+      if scope.modelWatch?
+        scope.$watch(scope.modelWatch, (newValue, oldValue) ->
+          if newValue?
+            update(newValue)
+            scope.data = newValue
+        , true)
+
+
+      scope.data = scope.sectionContent.data
+
+  }
 ])
 
 contentModule.directive('list', ['$timeout', ($timeout)->

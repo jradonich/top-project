@@ -67,6 +67,27 @@ mapsModule.directive('location', ['mapService', '$rootScope', 'User', (map, $roo
   }
 ])
 
+mapsModule.factory('locationService', ['$http', '$q', 'apiKey', ($http, $q, apiKey)->
+
+  freebaseBaseUrl = "https://usercontent.googleapis.com/freebase/v1/"
+
+  return {
+    getCityImage: (location) ->
+      defer = $q.defer()
+      locSplit = location.split(',')
+      city = locSplit[0].trim()
+      $http.get(freebaseBaseUrl + "topic/en/#{city.toLowerCase()}?key=#{apiKey}").success((topic)->
+        console.log('result', topic)
+        defer.resolve(freebaseBaseUrl + "image" + topic.property['/common/topic/image'].values[0].id +
+            "?maxwidth=300&maxheight=210&mode=fillcropmid&key=#{apiKey}")
+
+      )
+      return defer.promise
+  }
+
+
+])
+
 mapsModule.factory('mapService', ['$q', 'apiKey', ($q, apiKey) ->
   geo = if google? then new google.maps.Geocoder() else {}
   previousLookup = undefined

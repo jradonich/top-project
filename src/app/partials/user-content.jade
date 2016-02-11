@@ -13,8 +13,20 @@ div.container
       h2.row.text-center Let me introduce myself ...
 
       div.row
-        div.col-md-3.col-sm-6(ng-repeat="mysection in mySections")
-          content-item(content="mysection")
+        div.col-md-3.col-sm-6
+          div.content-panel(my-section-item section-content="mySections[0]")
+
+        div.col-md-3.col-sm-6
+          div.content-panel(my-section-item section-content="mySections[1]")
+
+        div.col-md-3.col-sm-6
+          div.content-panel(my-section-item section-clone="user.content.mostAmazing" section-content="mySections[2]")
+
+        div.col-md-3.col-sm-6
+          div.content-panel(my-section-item section-clone="user.location" model-watch="user.location" section-content="mySections[3]")
+
+        //div.col-md-3.col-sm-6(ng-repeat="mysection in mySections")
+        //  content-item(content="mysection")
       div.row
         div.well-lg.break-content.inverse(data-ng-show="!isReadOnly")
           div.row

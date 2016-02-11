@@ -1,0 +1,16 @@
+//
+   Created by jamieradonich on 2/11/16.
+div.row.content-item(ng-class="{editing: isEditing}")
+  div.col-md-12.text-center.panel-head(data-ng-show="!url") {{layout.name}}
+    div.col-md-12.text-center.subhead(ng-show="showsub")
+      em {{layout.getSubHeading()}}
+  div.col-md-12
+    span(data-ng-show="!url")
+        span(data-ng-show="!data") Add Content...
+        span(data-ng-show="data") {{data}}
+
+    div.location-content(ng-show="url")
+      img.map-img(ng-src="{{url}}")
+      div.content-bottom-overlay
+        span {{getText()}} &nbsp;
+        a(ng-href="{{fullUrl}}") (see map)
