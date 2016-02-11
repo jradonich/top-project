@@ -19,7 +19,7 @@ div(data-ng-show="isEditing")
 
 div.quoted-content(data-ng-show="!isEditing" data-ng-click="containerClick()")
   span(data-ng-show="!model.data")
-  span.content-display(data-ng-show="model.data")
+  div.content-display.content-body(data-ng-show="model.data")
     blockquote
       p {{model.data.content}}
       cite.pull-right {{model.data.citation}}

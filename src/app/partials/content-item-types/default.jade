@@ -3,7 +3,7 @@
 div.quoted-content(data-editable-textarea="model.data" data-e-placeholder="{{layout.defaultContent || 'Add ' + (layout.name | lowercase) + '...'}}"
   onshow="onContentElementShow()" onhide="bodyClick(true)")
     span(data-ng-show="!model.data") Add Content...
-    span.content-display(data-ng-show="model.data")
+    div.content-display.content-body(data-ng-show="model.data")
       p(data-ng-show="noquote") {{model.data}}
       blockquote(data-ng-show="!noquote")
         p {{model.data}}

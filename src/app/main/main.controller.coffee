@@ -34,6 +34,7 @@ angular.module 'toptalProject'
 
     $scope.user = User.model
 
+    $scope.isReadOnly = false
 
     # handler for Save Profile button
     $scope.updateProfile = () ->

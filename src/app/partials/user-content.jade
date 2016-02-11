@@ -16,7 +16,7 @@ div.container
         div.col-md-3.col-sm-6(ng-repeat="mysection in mySections")
           content-item(content="mysection")
       div.row
-        div.well-lg.inverse.break-content
+        div.well-lg.break-content.inverse(data-ng-show="!isReadOnly")
           div.row
             div.col-md-5.col-md-offset-4.text-center.vertical-align.col-sm-6.col-xs-12
               h4 To hire {{userObj.getFirstName()}} join us as a
@@ -25,6 +25,16 @@ div.container
               span.smaller.text-right Or as a developer
                 button.btn.btn-default.btn-sm
                   span.glyphicon.glyphicon-play-circle
+        div.well.well-lg.well-darker.break-content.simple(data-ng-show="isReadOnly")
+          div.row
+            div.col-sm-12.text-center
+              span.h4 Important! Please also fill out the Q&A form
+              button.text-uppercase.btn.btn-default Q&A Form
+          div.row
+            div.col-sm-12.text-center
+              span.smaller 5 of 25 questions answered.
+
+
 
 
   //Top Skills section

@@ -40,14 +40,22 @@
 
 .break-content {
   width: 100%;
-  .row {
+  > .row {
     min-height: 4em;
     .vertical-align {
       height: 100%;
     }
   }
-  button {
-    text-transform: uppercase;
+  &.simple {
+    > .row {
+      min-height: 2em;
+    }
+  }
+  &.well.well-darker {
+    background-color: darken(@well-bg, 15%);
+  }
+  .h4 {
+    font-size: @font-size-h4;
   }
   .smaller {
     font-size: @font-size-h5;
