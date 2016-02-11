@@ -8,8 +8,8 @@ userModule.value("defaultUser", {
         status: "Full-Time"
 })
 
-userModule.controller 'UserController', ['$scope', '$timeout', 'User', '$rootScope', 'Upload',
-  ($scope, $timeout, user, $rootScope, Upload) ->
+userModule.controller 'UserController', ['$scope', '$timeout', 'User', '$rootScope', 'Upload', '$window',
+  ($scope, $timeout, user, $rootScope, Upload, $window) ->
 
     $scope.$watch('user.location', (newValue, oldValue) ->
       if newValue isnt oldValue
@@ -79,6 +79,33 @@ userModule.controller 'UserController', ['$scope', '$timeout', 'User', '$rootSco
       $timeout(
         angular.element('button.load-user-image').click()
       , 0)
+
+
+    $scope.hasResume = () ->
+      return $scope.user.resume and $scope.user.resume.length
+
+    addResume = (resume) ->
+      if not $scope.hasResume()
+        $scope.user.resume = []
+
+      $scope.user.resume.push(resume)
+
+    $scope.openFile = (file) ->
+      $window.open(file.url, '_blank')
+
+    $scope.upload = (type, validFiles, invalidFiles) ->
+      if type == 'resume'
+        if validFiles? and validFiles.length
+          file = validFiles[0]
+          Upload.dataUrl(file, true).then((url) ->
+            resume = {
+              name: file.name
+              url: url
+            }
+            console.log("adding resume", resume)
+            addResume(resume)
+          )
+#      else if type == 'image'
 
     $scope.loadImageFile = (file) ->
       if file? and file.length

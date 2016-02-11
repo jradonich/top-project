@@ -2,22 +2,23 @@
    Created by jamieradonich on 2/1/16.
 div.row.user
   div.col-md-3.col-sm-4.col-xs-12.vertical-align.text-center
-    //div.row
-    div.display-component(data-ng-show="user.image" data-ng-click="editImage()")
-      img.user-img.img-fluid(data-ng-show="user.image" data-ng-src="{{user.image}}" alt="")
-    div(data-ng-show="!user.image")
-      button.btn.btn-default.load-user-image(data-ngf-select="loadImageFile($files, $invalidFiles)" data-ngf-no-object-url="true"
-        single data-accept="image/*" data-ngf-max-height="1000" data-ngf-max-size="1MB") Add Profile Image...
+    div.row
+      div.display-component(data-ng-show="user.image" data-ng-click="editImage()")
+        img.user-img.img-fluid(data-ng-show="user.image" data-ng-src="{{user.image}}" alt="")
+      div(data-ng-show="!user.image")
+        button.btn.btn-default.load-user-image(data-ngf-select="loadImageFile($files, $invalidFiles)" data-ngf-no-object-url="true"
+          single data-accept="image/*" data-ngf-max-height="1000" data-ngf-max-size="1MB") Add Profile Image...
 
   div.col-md-6.col-sm-8.col-xs-12
-    div.col-md-12
-        h3(class="user-name" data-editable-text="user.name" buttons="no") {{ user.name || "Add name" }}
-    //div.row
-    div.col-md-12
-      div(data-location="user.location" data-e-placeholder="Add Location")
-    //div.row
-    div.col-md-12
-      div(data-editable-text="user.languages" buttons="no" e-placeholder="Add Languages...") {{ user.languages || "Add languages" }}
+    div.row
+      div.col-md-12
+          h3(class="user-name" data-editable-text="user.name" buttons="no") {{ user.name || "Add name" }}
+    div.row
+      div.col-md-12
+        div(data-location="user.location" data-e-placeholder="Add Location")
+    div.row
+      div.col-md-12
+        div(data-editable-text="user.languages" buttons="no" e-placeholder="Add Languages...") {{ user.languages || "Add languages" }}
 
     div.skills.row
       ul.list-inline.skills-list
@@ -55,15 +56,31 @@ div.row.user
       div.col-md-12.text-muted
         span.text-center (You can only publish a completed profile)
 
-    div.row
+    div.row(ng-show="!hasResume()")
       div.col-md-12.pin-bottom.visible-md.visible-lg.text-center
-        button.btn.btn-primary
+        button.btn.btn-primary(data-ngf-select="upload('resume', $files, $invalidFiles)" data-ngf-no-object-url="true"
+          single
+          data-ngf-accept="'application/pdf, text/plain, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document'"
+          data-ngf-max-height="1000" data-ngf-max-size="1MB")
           span.glyphicon.glyphicon-open
           span  Upload Resume
       div.col-xs-12.visible-xs.visible-sm.text-center
-        button.btn.btn-primary
+        button.btn.btn-primary(data-ngf-select="upload('resume', $files, $invalidFiles)" data-ngf-no-object-url="true"
+          single
+          data-ngf-accept="'application/pdf, text/plain, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document'"
+          data-ngf-max-height="1000" data-ngf-max-size="1MB")
           span.glyphicon.glyphicon-open
           span  Upload Resume
+    div.row(ng-show="user.resume")
+      div.col-xs-12
+        div.row(ng-repeat="resume in user.resume")
+          div.col-xs-12
+            a.btn.btn-link(ng-click="openFile(resume)") {{resume.name}}
+            button.btn-sm.btn(ng-click="user.resume.splice($index, 1)" title="Remove")
+              span.glyphicon.glyphicon-remove-circle
+
+
+
 
 
 
