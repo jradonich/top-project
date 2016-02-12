@@ -227,7 +227,7 @@ contentModule.directive('mySectionItem', ['locationService', 'User', 'mapService
       link: (scope, element, attrs) ->
         layoutType = if scope.sectionLayout? then scope.sectionLayout.layout.type or "text" else "userdefined"
         scope.layoutType = layoutType
-        console.log("mysectionItem directive of type: #{layoutType}")
+#        console.log("mysectionItem directive of type: #{layoutType}")
         scope.layout = {}
         if scope.sectionLayout?
           scope.layout = scope.sectionLayout.layout
@@ -398,13 +398,11 @@ contentModule.directive 'contentItem', ['contentTypes', '$rootScope', 'User',
         model: '=contentMod'
       templateUrl: "app/partials/content-item-directive.html"
       controller: ['$scope', ($scope) ->
-#        console.log("contentItem.controller")
 
         layout = $scope.layout
         this.type = new contentTypes(layout.type)
         this.layout = layout
 
-        console.log("contentItem.controller scope: ", $scope.model)
         if not $scope.model.data
           $scope.model.data = angular.copy(this.type.defaultValue)
 
@@ -445,7 +443,7 @@ contentModule.directive 'contentItem', ['contentTypes', '$rootScope', 'User',
         typeObject = new contentTypes(layoutObj.type)
         scope.template = "app/partials/content-item-types/#{typeObject.inputType || 'default'}.html"
         scope.noquote = layoutObj.noquote
-        console.log("\ttypeObject", typeObject)
+
         scope.layout.inputType = typeObject.inputType || ""
         scope.isEditing = false
 
@@ -463,10 +461,10 @@ contentModule.directive 'contentItem', ['contentTypes', '$rootScope', 'User',
 
         scope.bodyClick = () ->
           scope.isEditing = false
-          console.log("clicked #{scope.model.name} - ", typeObject)
+#          console.log("clicked #{scope.model.name} - ", typeObject)
 
           if !scope.isEditing
-            console.log("No longer editing.  Will try validate value: #{scope.model.data}")
+#            console.log("No longer editing.  Will try validate value: #{scope.model.data}")
             if scope.model.data
               typeObject.validate(scope.model.data).then((isValid) ->
                 console.log "validation complete: #{isValid}"
