@@ -1,12 +1,6 @@
 userModule = angular.module 'user', ["localService", "ngFileUpload"]
 
 userModule.constant('saveNS', 'toptalUser')
-userModule.value("defaultUser", {
-  content:
-    availability:
-      data:
-        status: "Full-Time"
-})
 
 userModule.controller 'UserController', ['$scope', '$timeout', 'User', '$rootScope', 'Upload', '$window',
   ($scope, $timeout, user, $rootScope, Upload, $window) ->

@@ -1,6 +1,11 @@
 contentModule = angular.module 'content', ['map', 'ngFileUpload']
-
-contentModule.controller('ContentController', ['$scope', ($scope) ->
+contentModule.value("defaultUser", {
+  content:
+    availability:
+      data:
+        status: "Full-Time"
+})
+contentModule.controller('ContentController', ['$scope', 'defaultUser', ($scope, defaultUser) ->
   'ngInject'
 
   sections =
@@ -34,10 +39,15 @@ contentModule.controller('ContentController', ['$scope', ($scope) ->
       notFromUser: true
 
 
+  if not $scope.user.content?
+    $scope.user.content = {}
+
+
   tmpSections = {}
   _.forEach(sections, (section, prop) ->
     tmpSections[prop] = {
       layout: angular.extend({}, section)
+      data: angular.extend({}, (if $scope.user.content[prop] then $scope.user.content[prop] else {}), {})
     }
   )
 
@@ -62,24 +72,28 @@ contentModule.controller('ContentController', ['$scope', ($scope) ->
         else
           section.data = {}
 
+      cur = $scope.user[sectionType][key]
 
-        cur = $scope.user[sectionType][key]
-#      console.log "section - #{key}",
-        if cur
+      #      console.log "section - #{key}",
+      if cur
 #          console.log("\tfound value for #{key}", cur)
-          section.data = cur
-        else
-          section.data = $scope.user[sectionType][key]
+        section.data = cur
+      else
+          $scope.user[sectionType][key] = section.data
+#        section.data = $scope.user[sectionType][key]
 
     )
-
-  if $scope.user.content?
-    populateSections(tmpSections)
+  if not $scope.user.content?
+    $scope.user.content = {}
+    console.log('scope.user.content', $scope.user)
+  populateSections(tmpSections)
 
   if $scope.user.mySections?
     _.forEach(mySections, (section, key)->
-      if $scope.user.mySections[key].data
-        section.data = $scope.user.mySections[key].data
+      if $scope.user.mySections[key]?
+        section.data = angular.extend({}, (if $scope.user.mySections[key].data? then $scope.user.mySections[key].data else {}))
+      else
+        section.data = {}
     )
 #    console.log("scope.mysections", $scope.user.mySections)
 #    console.log("mysections", mySections)

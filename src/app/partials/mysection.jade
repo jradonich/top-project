@@ -14,7 +14,7 @@ div.content-item.section-content(ng-class="{editing: isEditing}" ng-switch="layo
             p {{data.data}}
             cite.pull-right {{getUserName()}}
   div.panel-content(ng-switch-when="map")
-    div.section-panel-body
+    div.section-panel-body(data-ng-show="url")
       div.img-row
         img.map-img(ng-src="{{url}}")
         div.content-bottom-overlay
