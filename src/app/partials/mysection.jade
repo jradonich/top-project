@@ -1,16 +1,42 @@
 //
    Created by jamieradonich on 2/11/16.
-div.row.content-item(ng-class="{editing: isEditing}")
-  div.col-md-12.text-center.panel-head(data-ng-show="!url") {{layout.name}}
+div.row.content-item.section-content(ng-class="{editing: isEditing}" ng-switch="layoutType")
+  div.col-md-12.text-center.section-panel-heading(data-ng-show="layoutType == 'text'") {{layout.name}}
     div.col-md-12.text-center.subhead(ng-show="showsub")
       em {{layout.getSubHeading()}}
-  div.col-md-12
-    span(data-ng-show="!url")
-        span(data-ng-show="!data") Add Content...
-        span(data-ng-show="data") {{data}}
 
-    div.location-content(ng-show="url")
-      img.map-img(ng-src="{{url}}")
-      div.content-bottom-overlay
-        span {{getText()}} &nbsp;
-        a(ng-href="{{fullUrl}}") (see map)
+  div.panel-content(ng-switch-when="map")
+    div.section-panel-body
+      div.img-row
+        img.map-img(ng-src="{{url}}")
+        div.content-bottom-overlay
+          span {{getText()}} &nbsp;
+          a(ng-href="{{fullUrl}}") (see map)
+
+
+  div.panel-content(ng-switch-when="userdefined")
+    div.section-panel-body(data-ng-show="!isEditing && (data.url || data.text)" ng-click="addContent()")
+      div.img-row
+        img.img-responsive(ng-src="{{data.url}}")
+        div.content-bottom-overlay(data-ng-show="data.text")
+          span {{data.text}}
+    div.section-panel-body.vertical-align(data-ng-show="!isEditing && !data.url")
+      p.flex-row.text-center(data-ng-click="addContent()") Add Content...
+    div.section-panel-body(data-ng-show="isEditing")
+      div.flex-row.fill
+        textarea.form-control(placeholder="Add text content" ng-model="data.text")
+      div.flex-row
+        button.btn.btn-default.text-center(data-ngf-select="attachFile($files, $invalidFiles)" data-ngf-no-object-url="true"
+          single data-ngf-accept="'image/*'" data-ngf-max-height="1000" data-ngf-max-size="1MB"
+          data-ng-show="!attachedFile.url") Attach Image
+        div(data-ng-show="attachedFile.url")
+          div.col-xs-12
+            div.row
+              div.col-xs-12
+                a.btn.btn-link(data-ngf-select="attachFile($files, $invalidFiles)" data-ngf-no-object-url="true"
+                  single data-ngf-accept="'image/*'" data-ngf-max-height="1000" data-ngf-max-size="1MB" title="{{attachedFile.name}}") {{attachedFile.name | limitTo: 20}}
+                button.btn-sm.btn(ng-click="removeAttachedFile()" title="Remove")
+                  span.glyphicon.glyphicon-remove-circle
+      div.flex-row.bottom-actions
+        button.btn.btn-primary(ng-click="submit()")
+          span.glyphicon.glyphicon-ok

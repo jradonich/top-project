@@ -1,4 +1,4 @@
-contentModule = angular.module 'content', ['map']
+contentModule = angular.module 'content', ['map', 'ngFileUpload']
 
 contentModule.controller('ContentController', ['$scope', ($scope) ->
   'ngInject'
@@ -76,10 +76,14 @@ contentModule.controller('ContentController', ['$scope', ($scope) ->
   if $scope.user.content?
     populateSections(tmpSections)
 
-#  console.log("populating mysects")
-#  debugger
-#  populateSections(mySections, 'mysections')
-  console.log("mysections : ", mySections)
+  if $scope.user.mySections?
+    _.forEach(mySections, (section, key)->
+      if $scope.user.mySections[key].data
+        section.data = $scope.user.mySections[key].data
+    )
+#    console.log("scope.mysections", $scope.user.mySections)
+#    console.log("mysections", mySections)
+
   if $scope.user
     console.log("sections after loop", tmpSections)
     console.log("$scope.user after for loop", $scope.user.content)
@@ -92,7 +96,7 @@ contentModule.controller('ContentController', ['$scope', ($scope) ->
     mySections[3].data = $scope.user.location
 
     $scope.mySections = mySections
-
+    $scope.user.mySections = $scope.mySections
 ])
 
 contentModule.directive 'contenteditable', [
@@ -212,40 +216,73 @@ contentModule.factory('contentTypes', ["mapService", "$q", (mapService, $q) ->
 
 
 
-contentModule.directive('mySectionItem', ['locationService', 'User', 'mapService', (locationService, User, map)->
-  'ngInject'
-  return {
-    restrict: 'EA'
-    scope:
-      sectionContent: '='
-      sectionClone: "="
-      modelWatch: "&"
-    templateUrl: "app/partials/mysection.html"
-    link: (scope) ->
-      scope.data = ""
-      scope.getText = () ->
-        return "#{User.getFirstName()} lives in #{scope.data}"
+contentModule.directive('mySectionItem', ['locationService', 'User', 'mapService', 'Upload',
+  (locationService, User, map, Upload)->
+    'ngInject'
+    return {
+      restrict: 'EA'
+      scope:
+        sectionContent: '='
+        sectionLayout: "="
+        sectionUserDefined: "&"
+        modelWatch: "&"
+      templateUrl: "app/partials/mysection.html"
+      link: (scope, element, attrs) ->
+        layoutType = if scope.sectionLayout? then scope.sectionLayout.layout.type or "text" else "userdefined"
+        scope.layoutType = layoutType
+        console.log("mysectionItem directive of type: #{layoutType}")
+        scope.data = ""
+        scope.getText = () ->
+          return "#{User.getFirstName()} lives in #{scope.data}"
 
-      update = (value) ->
-        locationService.getCityImage(value).then((url) ->
-          console.log("cityimage result", url)
-          scope.url = url
-          map.getLocation(value).then(() ->
-            scope.fullUrl = map.getFullMapUrl()
-          )
-        )
+        scope.removeAttachedFile = () ->
+          scope.attachedFile = {}
 
-      if scope.modelWatch?
-        scope.$watch(scope.modelWatch, (newValue, oldValue) ->
-          if newValue?
-            update(newValue)
-            scope.data = newValue
-        , true)
+        scope.attachFile = (files) ->
+          console.log("attaching file", files)
+          if files? and files.length
+            file = files[0]
+            Upload.dataUrl(file, true).then((url) ->
+              scope.attachedFile = {
+                name: file.name
+                url: url
+              }
+            )
+
+        scope.submit = () ->
+          scope.isEditing = false
+          scope.data.url = if scope.attachedFile? then scope.attachedFile.url else ""
 
 
-      scope.data = scope.sectionContent.data
+        scope.addContent = () ->
+          scope.isEditing = true
 
-  }
+        update = (value) ->
+
+          if layoutType == 'map'
+            if _.isString(value)
+              locationService.getCityImage(value).then((url) ->
+                console.log("cityimage result", url)
+                scope.url = url
+                map.getLocation(value).then(() ->
+                  scope.fullUrl = map.getFullMapUrl()
+                )
+              )
+
+          else if layoutType == 'text'
+            console.log("layout type of text updated w/ value: ", value)
+
+        if scope.modelWatch?
+          scope.$watch(scope.modelWatch, (newValue, oldValue) ->
+            if newValue?
+              update(newValue)
+              scope.data = newValue
+          , true)
+
+
+        scope.data = scope.sectionContent.data
+
+    }
 ])
 
 contentModule.directive('list', ['$timeout', ($timeout)->

@@ -1,3 +1,69 @@
+//My section specific styles
+.section-content {
+  display: flex;
+  flex-direction: column;
+  height: @panel-height;
+  .paddinglr(0);
+  > div {
+    width: 100%;
+  }
+  .section-panel-heading {
+    flex: 1 1 @panel-header-height;
+  }
+  .panel-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    .flex-row {
+      flex: 0 1 auto;
+      padding-top: 5px;
+      &.fill {
+        display: flex;
+        flex: 1 1 auto;
+      }
+    }
+    .section-panel-body {
+      .paddinglr(15px);
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 100%;
+      overflow-y: auto;
+      margin-left: 5px;
+      margin-right: 5px;
+      .bottom-actions {
+        padding-top: 5px;
+        flex: 0 1 40px;
+      }
+      .img-row {
+        height: @panel-height;
+        .center-block();
+        img {
+          max-width: 100%;
+          max-height: @panel-height;
+          height: auto;
+        }
+      }
+
+      .content-bottom-overlay {
+        opacity: .9;
+        background-color: #000000;
+        color: #FFF;
+        height: 45px;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        .paddinglr(10px);
+
+      }
+    }
+
+    .panel-content-footer {
+      flex: 0 1 40px;
+    }
+  }
+}
+
 .content-item {
   .content-body {
     height: 100%;
