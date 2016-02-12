@@ -1,10 +1,18 @@
 //
    Created by jamieradonich on 2/11/16.
-div.row.content-item.section-content(ng-class="{editing: isEditing}" ng-switch="layoutType")
+div.content-item.section-content(ng-class="{editing: isEditing}" ng-switch="layoutType")
   div.col-md-12.text-center.section-panel-heading(data-ng-show="layoutType == 'text'") {{layout.name}}
     div.col-md-12.text-center.subhead(ng-show="showsub")
       em {{layout.getSubHeading()}}
 
+  div.panel-content.quotetext(ng-switch-when="text")
+    div.section-panel-body.quoted-content
+      div.flex-row
+        //span(data-ng-show="!model.data") Add Content...
+        div.content-display.content-body(data-ng-show="data.data")
+          blockquote
+            p {{data.data}}
+            cite.pull-right {{getUserName()}}
   div.panel-content(ng-switch-when="map")
     div.section-panel-body
       div.img-row

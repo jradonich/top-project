@@ -3,13 +3,24 @@
   display: flex;
   flex-direction: column;
   height: @panel-height;
-  .paddinglr(0);
   > div {
     width: 100%;
   }
   .section-panel-heading {
-    flex: 1 1 @panel-header-height;
+    flex: 0 1 @panel-header-height;
+    .paddingtb(5px, 2px);
+    font-weight: bold;
+    font-size: @font-size-h4;
+
   }
+  .panel-content.quotetext {
+    overflow-y: auto;
+    overflow-x: hidden;
+    .section-panel-body {
+      .paddinglr(0);
+    }
+  }
+
   .panel-content {
     display: flex;
     flex-direction: column;
@@ -23,11 +34,47 @@
       }
     }
     .section-panel-body {
+      .quoted-content {
+        blockquote {
+          font-style: italic;
+          &:before {
+            font-style: normal;
+            display: block;
+            padding-left: 10px;
+            content: "\201C";
+            font-size: 80px;
+            position: absolute;
+            left: -10px;
+            top: -20px;
+            color: #979797;
+          }
+          &:after {
+            display: block;
+            padding-right: 20px;
+            content: "\201D";
+            font-size: 80px;
+            position: absolute;
+            right: -10px;
+            bottom: -60px;
+            color: #979797;
+          }
+          cite {
+            &:before {
+              content: "\2014 \2009";
+            }
+            color: #000;
+            font-weight: bold;
+            font-size: 14px;
+            display: block;
+            margin-top: 5px;
+            margin-right: 15px;
+          }
+        }
+      }
       .paddinglr(15px);
       display: flex;
       flex-direction: column;
       flex: 1 1 100%;
-      overflow-y: auto;
       margin-left: 5px;
       margin-right: 5px;
       .bottom-actions {
@@ -193,6 +240,8 @@
         font-size: 14px;
         display: block;
         margin-top: 5px;
+        margin-right: 15px;
+
       }
     }
 

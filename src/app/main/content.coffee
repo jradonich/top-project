@@ -90,9 +90,6 @@ contentModule.controller('ContentController', ['$scope', ($scope) ->
     $scope.sections = tmpSections
 
     mySections[2] = $scope.user.content.mostAmazing
-
-    console.log("MOST AMAZING", mySections[2])
-
     mySections[3].data = $scope.user.location
 
     $scope.mySections = mySections
@@ -231,9 +228,15 @@ contentModule.directive('mySectionItem', ['locationService', 'User', 'mapService
         layoutType = if scope.sectionLayout? then scope.sectionLayout.layout.type or "text" else "userdefined"
         scope.layoutType = layoutType
         console.log("mysectionItem directive of type: #{layoutType}")
+        scope.layout = {}
+        if scope.sectionLayout?
+          scope.layout = scope.sectionLayout.layout
+        scope.getUserName = User.getFirstName
         scope.data = ""
         scope.getText = () ->
           return "#{User.getFirstName()} lives in #{scope.data}"
+
+#        scope.user = User
 
         scope.removeAttachedFile = () ->
           scope.attachedFile = {}
@@ -258,7 +261,6 @@ contentModule.directive('mySectionItem', ['locationService', 'User', 'mapService
           scope.isEditing = true
 
         update = (value) ->
-
           if layoutType == 'map'
             if _.isString(value)
               locationService.getCityImage(value).then((url) ->
@@ -268,12 +270,13 @@ contentModule.directive('mySectionItem', ['locationService', 'User', 'mapService
                   scope.fullUrl = map.getFullMapUrl()
                 )
               )
-
           else if layoutType == 'text'
             console.log("layout type of text updated w/ value: ", value)
+#            scope.data = value
 
-        if scope.modelWatch?
+        if scope.modelWatch
           scope.$watch(scope.modelWatch, (newValue, oldValue) ->
+            console.log(layoutType, [oldValue, newValue])
             if newValue?
               update(newValue)
               scope.data = newValue
